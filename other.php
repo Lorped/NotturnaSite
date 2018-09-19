@@ -1,0 +1,734 @@
+<?php
+	include ('session_start.inc.php');
+	include ('db_start.inc.php');
+
+
+	if (!isset ($_SESSION['idutente'])) {
+		// die ("Errore, nessuna sessione attiva!");
+		session_write_close();
+		header("Location: index.php", true);
+	}
+
+
+
+	$idutente=$_SESSION['idutente'];
+
+
+
+
+	if (isset ($_POST['adddsciplina'])) {
+		//die ("isset");
+		$addis=$_POST['adddsciplina'];
+		$Mysql = "INSERT INTO discipline  (iddisciplina, idutente, livello, DiClan) VALUES ( $addis , $idutente, 0 ,'S' ) ";
+		$Result=mysql_query($Mysql);
+	}
+
+
+
+
+	$MySql = "SELECT *  FROM personaggio
+		LEFT JOIN clan ON personaggio.idclan=clan.idclan
+		LEFT JOIN statuscama ON personaggio.idstatus=statuscama.idstatus
+		LEFT JOIN sentieri ON personaggio.idsentiero=sentieri.idsentiero
+		LEFT JOIN generazione ON personaggio.generazione=generazione.generazione
+		WHERE idutente = $idutente ";
+
+	$Result = mysql_query($MySql);
+	$res = mysql_fetch_array($Result);
+
+	$nome=$res['nomepg'];
+
+	$clan=$res['nomeclan'];
+	$idclan=$res['idclan'];
+	$generazione=$res['generazione'];
+
+	$ps=$res['ps'];
+	$psturno=$res['psturno'];
+
+	$forza=$res['forza'];
+	$destrezza=$res['destrezza'];
+	$attutimento=$res['attutimento'];
+	$carisma=$res['carisma'];
+	$persuasione=$res['persuasione'];
+	$saggezza=$res['saggezza'];
+	$percezione=$res['percezione'];
+	$intelligenza=$res['intelligenza'];
+	$prontezza=$res['prontezza'];
+
+	$fdv=$res['fdv'];
+	$status=$res['status'];
+	$idstatus=$res['idstatus'];
+
+	$valsentiero=$res['valsentiero'];
+	$sentiero=$res['sentiero'];
+
+
+	$fama1=$res['fama1']; //città
+	$fama2=$res['fama2']; //vamp
+	$fama3=$res['fama3'];  //wod
+
+	$xp=$res['xp'];
+	$xpspesi=$res['xpspesi'];
+
+
+	$MAXSTAT=$res['maxstat'];
+
+	$maxdisctab  = [
+		[ 2, 3, 3, 4,  4,  5,  5 ,6,7,8,9 ],
+		[ 3, 3, 4, 4 , 5 , 5 , 5 ,6,7,8,9 ],
+		[ 3, 4, 5, 5 , 5 , 5 , 5 ,6,7,8,9 ],
+		[ 4, 5, 5, 5 , 5 , 5 , 5 ,6,7,8,9 ],
+		[ 4, 5, 5, 5 , 5 , 5 , 5 ,6,7,8,9 ],
+		[ 5, 5, 5, 5 , 5 , 5 , 5 ,6,7,8,9 ]
+	];
+
+	$MAXSDISC=$maxdisctab[$idstatus][14-$generazione];
+
+
+	/**************************  pregi e difetti ****************/
+
+	$MySql = "SELECT  sum(valore) as s FROM pregidifetti
+				LEFT JOIN pregidifetti_main ON pregidifetti_main.idpregio=pregidifetti.idpregio
+         		WHERE idutente = $idutente ";
+	$Results = mysql_query($MySql);
+	$res=mysql_fetch_array($Results);
+	$pregitot=$res['s'];
+	if ($pregitot=="") $pregitot=0;
+
+	$MySql = "SELECT  sum(pxspesi) as s FROM pregidifetti
+         		WHERE idutente = $idutente ";
+	$Results = mysql_query($MySql);
+	$res=mysql_fetch_array($Results);
+	$pxspesi=$res['s'];
+	if ($pxspesi=="") $pxspesi=0;
+
+	$pregitot=$pregitot - ($pxspesi/2) ;
+
+
+	$pregipossibili=floor (($xp-$xpspesi)/2);
+
+
+	$MySql = "SELECT count(*) as c FROM pregidifetti_main
+    			LEFT JOIN pregidifetti ON pregidifetti.idpregio = pregidifetti_main.idpregio
+    			WHERE idutente = $idutente AND valore >0
+    			";
+	$Results = mysql_query($MySql);
+	$res=mysql_fetch_array($Results);
+	$NUMpregi=$res[c];
+	$MySql = "SELECT count(*) as c FROM pregidifetti_main
+					LEFT JOIN pregidifetti ON pregidifetti.idpregio = pregidifetti_main.idpregio
+					WHERE idutente = $idutente AND valore <0
+					";
+	$Results = mysql_query($MySql);
+	$res=mysql_fetch_array($Results);
+	$NUMdifetti=$res[c];
+
+	$pregi_f=0;
+	$pregi_s=0;
+	$pregi_m=0;
+	$pregi_x=0;
+	$MySql = "SELECT classe, count(*) as c FROM pregidifetti_main
+    			LEFT JOIN pregidifetti ON pregidifetti.idpregio = pregidifetti_main.idpregio
+    			WHERE idutente = $idutente AND valore >0
+    			GROUP BY classe";
+	$Results = mysql_query($MySql);
+	while ($res=mysql_fetch_array($Results)) {
+		if ( $res['classe'] == 'F' ) { $pregi_f =  $res['c']; }
+		if ( $res['classe'] == 'S' ) { $pregi_s =  $res['c']; }
+		if ( $res['classe'] == 'M' ) { $pregi_m =  $res['c']; }
+		if ( $res['classe'] == 'X' ) { $pregi_x =  $res['c']; }
+	}
+
+	$dife_f=0;
+	$dife_s=0;
+	$dife_m=0;
+	$dife_x=0;
+	$MySql = "SELECT classe, count(*) as c FROM pregidifetti_main
+    			LEFT JOIN pregidifetti ON pregidifetti.idpregio = pregidifetti_main.idpregio
+    			WHERE idutente = $idutente AND valore <0
+    			GROUP BY classe";
+	$Results = mysql_query($MySql);
+	while ($res=mysql_fetch_array($Results)) {
+		if ( $res['classe'] == 'F' ) { $dife_f =  $res['c']; }
+		if ( $res['classe'] == 'S' ) { $dife_s =  $res['c']; }
+		if ( $res['classe'] == 'M' ) { $dife_m =  $res['c']; }
+		if ( $res['classe'] == 'X' ) { $dife_x =  $res['c']; }
+	}
+
+
+	$adddisciplina=0;
+
+	$Mysql="SELECT count(*) as c FROM pregidifetti WHERE idpregio=125 AND idutente=$idutente";
+	$Result=mysql_query($Mysql);
+	$res=mysql_fetch_array($Result);
+
+	if ( $res['c'] == 1 ) {
+		$Mysql="SELECT count(*) as c FROM discipline WHERE DiClan ='S' AND  idutente=$idutente";
+		$Result=mysql_query($Mysql);
+		$res=mysql_fetch_array($Result);
+		if ( $res['c'] == 3 ) {
+			$adddisciplina=1;
+
+			$ve=1;
+			$po=1;
+			$ro=1;
+			$aus=1;
+			$osc=1;
+			$ani=1;
+
+			switch ($idclan) {
+				case 1: //tor
+					$ve=0;
+					$aus=0;
+					break;
+				case 2: //ventrue
+					$ro=0;
+					break;
+				case 3: //nosf
+					$po=0;
+					$osc=0;
+					$ani=0;
+					break;
+				case 4: //bruj
+					$po=0;
+					$ve=0;
+					break;
+				case 5: //gang
+					$ro=0;
+					$ani=0;
+					break;
+				case 6: //malk
+					$aus=0;
+					$osc=0;
+					break;
+				case 7: //trem
+					$aus=0;
+					break;
+				case 8: //las
+					$po=0;
+					break;
+				case 9: //tzim
+					$aus=0;
+					$ani=0;
+					break;
+				case 10: //ass
+					$ve=0;
+					$osc=0;
+					break;
+				case 11: //gio
+					$po=0;
+					break;
+				case 12: //rav
+					$ro=0;
+					$ani=0;
+					break;
+				case 13: //set
+					$osc=0;
+					break;
+			}
+		}
+	}
+
+//die ($idclan."  ".$v." ".$p." ".$r );
+
+
+	$mysql2="SELECT count(*) as c FROM pregidifetti
+	LEFT JOIN pregidifetti_main ON pregidifetti.idpregio=pregidifetti_main.idpregio
+	WHERE idutente=$idutente AND valore <0 AND classe='F' ";
+	$results2=mysql_query($mysql2);
+	$res2=mysql_fetch_array($results2);
+	$Ndife_F=$res2['c'];
+
+	$mysql2="SELECT count(*) as c FROM pregidifetti
+	LEFT JOIN pregidifetti_main ON pregidifetti.idpregio=pregidifetti_main.idpregio
+	WHERE idutente=$idutente AND valore <0 AND classe='S' ";
+	$results2=mysql_query($mysql2);
+	$res2=mysql_fetch_array($results2);
+	$Ndife_S=$res2['c'];
+
+	 $mysql2="SELECT count(*) as c FROM pregidifetti
+	 LEFT JOIN pregidifetti_main ON pregidifetti.idpregio=pregidifetti_main.idpregio
+	 WHERE idutente=$idutente AND valore <0 AND classe='M' ";
+	 $results2=mysql_query($mysql2);
+	 $res2=mysql_fetch_array($results2);
+	 $Ndife_M=$res2['c'];
+
+	 $mysql2="SELECT count(*) as c FROM pregidifetti
+	 LEFT JOIN pregidifetti_main ON pregidifetti.idpregio=pregidifetti_main.idpregio
+	 WHERE idutente=$idutente AND valore <0 AND classe='X' ";
+	 $results2=mysql_query($mysql2);
+	 $res2=mysql_fetch_array($results2);
+	 $Ndife_X=$res2['c'];
+
+
+
+
+
+?>
+
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>Notturna - Cronaca di Roma</title>
+	<link href="https://fonts.googleapis.com/css?family=Libre+Baskerville" rel="stylesheet">
+	<link href="w3.css" rel="stylesheet" >
+	<style>
+		/*	table td {
+			border: 1px solid red;
+		} */
+		body {
+			font-family: arial, sans-serif;
+		}
+		hr {
+			border-top: 1px solid #000000;
+			margin-top: 0.2em;
+    		margin-bottom: 0.2em;
+		}
+		.ald {
+			text-align:right;
+		}
+		.alc {
+			text-align:center;
+		}
+
+		table {
+			border-collapse: collapse;
+			border-spacing: 0;
+			margin: 0 auto;
+		}
+
+		/* valign */
+		.val { vertical-align: top; }
+
+		img {
+			border: 0px;
+			margin: 0px;
+		}
+		input[type=number] {
+   			width:  80px;
+   			-moz-appearance: textfield;
+		}
+		/*input[type=submit] {
+    		width: 90px;
+			padding: 0;
+			height: 40px;
+		}*/
+		select {
+    		width: 230px;
+		}
+		.title {
+			font-family: 'Libre Baskerville';
+			font-size: 110%;
+			font-weight: bold;
+		}
+		.title2 {
+			font-size: 105%;
+			font-weight: bold;
+		}
+
+	</style>
+	<script>
+
+		var dife_F = <?=$Ndife_F?>;
+		var dife_S = <?=$Ndife_S?>;
+		var dife_M = <?=$Ndife_M?>;
+		var dife_X = <?=$Ndife_X?>;
+
+
+
+		function controlla (form,select) {
+
+
+
+			var objselected = document.getElementById(select).value;
+			if ( objselected ) {
+
+				var sel = document.getElementById(select);
+				var selected = sel.options[sel.selectedIndex];
+				var id = selected.getAttribute('data-id');
+				var val = selected.getAttribute('data-val');
+				var classe = selected.getAttribute('data-classe');
+
+
+
+				if (val > <?=-$pregitot?> ) {
+
+					var r = confirm("Crediti ( <?=-$pregitot?> ) insufficienti. Usare PX?");
+					if (r == true) {
+						// alert("OK chiamo backend - val="+val+" id = "+id);
+						document.getElementById(form).submit();
+					} else {
+						// alert("Non faccio nulla");
+					}
+				} else {
+
+					// alert("OK chiamo backend con semplice compensazione P/D - val="+val+" id = "+id);
+
+					document.getElementById(form).submit();
+				}
+
+			}
+		}
+	</script>
+</head>
+<body>
+	<div align=center>
+	<table>
+	<tr>
+			<td width="150">&nbsp;</td>
+			<td width="50">&nbsp;</td>
+			<td width="100">&nbsp;</td>
+			<td width="150">&nbsp;</td>
+			<td width="50">&nbsp;</td>
+			<td width="100">&nbsp;</td>
+			<td width="150">&nbsp;</td>
+			<td width="50">&nbsp;</td>
+		</tr>
+		<tr>
+			<td colspan=8 class="alc title"><hr>Pregi e Difetti<hr></td>
+		</tr>
+		<tr>
+			<td colspan=8>&nbsp;</td>
+		</tr>
+		<tr>
+			<td colspan=8 class="alc title2">Pregi<hr></td>
+		</tr>
+<?	$MySql = "SELECT  nomepregio ,valore, classe FROM pregidifetti
+      			LEFT JOIN pregidifetti_main ON pregidifetti_main.idpregio=pregidifetti.idpregio
+          		WHERE idutente = '$idutente' AND valore >0";
+	$Results = mysql_query($MySql);
+	if (mysql_errno())  die ( mysql_errno().": ".mysql_error() );
+	$num_rows = mysql_num_rows($Results);
+
+	for ( $i=0; $i < floor($num_rows/3) ; $i++) {
+		$res = mysql_fetch_array($Results);
+?>
+		<tr>
+			<td><?=$res['nomepregio']?></td>
+			<td class="ald"><?=$res['valore']?> (<?=$res['classe']?>)</td>
+			<td>&nbsp;</td>
+<?
+		$res = mysql_fetch_array($Results);
+?>
+			<td><?=$res['nomepregio']?></td>
+			<td class="ald"><?=$res['valore']?> (<?=$res['classe']?>)</td>
+			<td>&nbsp;</td>
+<?
+		$res = mysql_fetch_array($Results);
+?>
+			<td><?=$res['nomepregio']?></td>
+			<td class="ald"><?=$res['valore']?> (<?=$res['classe']?>)</td>
+		</tr>
+<?
+	}
+	if (floor($num_rows/3)*3 !=$num_rows ) {
+?>
+		<tr>
+<?
+				$r=0;
+		for ( $k=0; $k < $num_rows-$i*3 ; $k++) {
+			$res = mysql_fetch_array($Results);
+?>
+			<td><?=$res['nomepregio']?></td>
+			<td class="ald"><?=$res['valore']?> (<?=$res['classe']?>)</td>
+			<td>&nbsp;</td>
+<?
+			$r=$r+3;
+		}
+		for ( ; $r < 9 ; $r++) {
+?>
+			<td>&nbsp;</td>
+<?
+		}
+?>
+		</tr>
+<?
+	}
+?>
+		<tr>
+			<td colspan=8 class="alc title2">Difetti<hr></td>
+		</tr>
+<?	$MySql = "SELECT  nomepregio ,valore, classe FROM pregidifetti
+      			LEFT JOIN pregidifetti_main ON pregidifetti_main.idpregio=pregidifetti.idpregio
+          		WHERE idutente = '$idutente' AND valore <0";
+	$Results = mysql_query($MySql);
+	if (mysql_errno())  die ( mysql_errno().": ".mysql_error() );
+		$num_rows = mysql_num_rows($Results);
+
+		for ( $i=0; $i < floor($num_rows/3) ; $i++) {
+			$res = mysql_fetch_array($Results);
+?>
+		<tr>
+			<td><?=$res['nomepregio']?></td>
+			<td class="ald"><?=$res['valore']?> (<?=$res['classe']?>)</td>
+			<td>&nbsp;</td>
+<?
+			$res = mysql_fetch_array($Results);
+?>
+			<td><?=$res['nomepregio']?></td>
+			<td class="ald"><?=$res['valore']?> (<?=$res['classe']?>)</td>
+			<td>&nbsp;</td>
+<?
+			$res = mysql_fetch_array($Results);
+?>
+			<td><?=$res['nomepregio']?></td>
+			<td class="ald"><?=$res['valore']?> (<?=$res['classe']?>)</td>
+		</tr>
+<?
+		}
+		if (floor($num_rows/3)*3 !=$num_rows ) {
+?>
+		<tr>
+<?
+			$r=0;
+			for ( $k=0; $k < $num_rows-$i*3 ; $k++) {
+				$res = mysql_fetch_array($Results);
+?>
+			<td><?=$res['nomepregio']?></td>
+			<td class="ald"><?=$res['valore']?> (<?=$res['classe']?>)</td>
+			<td>&nbsp;</td>
+<?
+				$r=$r+3;
+			}
+			for ( ; $r < 9 ; $r++) {
+?>
+			<td>&nbsp;</td>
+<?
+			}
+?>
+		</tr>
+<?
+		}
+?>
+		</table>
+	</div>
+
+	<div align=center>
+	<table>
+		<tr>
+			<td width="50">&nbsp;</td>
+			<td width="100">&nbsp;</td>
+			<td width="235">&nbsp;</td>
+			<td width="40">&nbsp;</td>
+			<td width="100">&nbsp;</td>
+			<td width="235">&nbsp;</td>
+			<td width="40">&nbsp;</td>
+		</tr>
+		<tr>
+			<td colspan=7 class="alc title2">Crediti <?=-$pregitot?> (<?=$Ndife_F!=0?" F ":""?> <?=$Ndife_S!=0?"S ":""?> <?=$Ndife_M!=0?"M ":""?> <?=$Ndife_X!=0?"X ":""?>)&nbsp;&nbsp;  PX <?=($xp-$xpspesi)?> </td>
+		</tr>
+		<tr>
+			<td>&nbsp;</td>
+			<td colspan=3 class="alc">Difetti (<?=$NUMdifetti?>/5)</td>
+			<td colspan=3 class="alc">Pregi (<?=$NUMpregi?>/5)</td>
+		</tr>
+<!-- fisici -->
+		<tr>
+			<td>Fisici</td>
+			<form name="formdf" action="ws/pregi.php"  method="post">
+			<td><input type=submit id="adf" value="Aggiungi" class="w3-btn w3-white w3-border w3-border-red w3-round w3-block"></td>
+			<td><select name="df" id="df" required><option></option>
+<?
+	$Mysql="SELECT pregidifetti_main.idpregio, nomepregio, valore FROM pregidifetti_main
+		LEFT JOIN pregidifetti ON pregidifetti.idpregio = pregidifetti_main.idpregio AND idutente = $idutente
+		WHERE idutente IS NULL AND valore <0 AND classe = 'F' ORDER BY valore DESC";
+	$Results = mysql_query($Mysql);
+	while ( $Res = mysql_fetch_array($Results))  {
+?>				<option value='<?=$Res['idpregio']?>'><?=$Res['nomepregio']." ".$Res['valore']?></option>
+<?
+}?>
+				</select></td>
+			<td><?=$dife_f?>/3</td>
+			</form>
+
+			<form name="formpf" id="formpf" action="ws/pregi.php"  method="post">
+			<td><input type=button id="apf" value="Aggiungi" onclick="controlla('formpf','pf')" class="w3-btn w3-white w3-border w3-border-blue w3-round w3-block"></td>
+			<td><select name="pf" id="pf" required    ><option></option>
+<?
+	$Mysql="SELECT pregidifetti_main.idpregio, nomepregio, valore FROM pregidifetti_main
+		LEFT JOIN pregidifetti ON pregidifetti.idpregio = pregidifetti_main.idpregio AND idutente = $idutente
+		WHERE idutente IS NULL AND valore >0 AND classe = 'F' ORDER BY valore ASC";
+	$Results = mysql_query($Mysql);
+	while ( $Res = mysql_fetch_array($Results))  {
+?>
+				<option value="<?=$Res['idpregio']?>"  data-classe="F" data-id="<?= $Res['idpregio'] ?>"   data-val="<?=$Res['valore']?>" <?=($Res['valore']>-$pregitot+$pregipossibili?"disabled":"")/*||($Ndife_F==0&&$Res['valore']>$pregipossibili)*/ ?> > <?=$Res['nomepregio']." ".$Res['valore']?></option>
+
+<?
+}?>
+				</select></td>
+			<td><?=$pregi_f?>/3</td>
+			</form>
+
+		</tr>
+<!-- sociali -->
+		<tr>
+			<td>Sociali</td>
+			<form name="formds" action="ws/pregi.php"  method="post">
+			<td><input type=submit id="ads" value="Aggiungi" class="w3-btn w3-white w3-border w3-border-red w3-round w3-block"></td>
+			<td><select name="ds" id="ds" required><option></option>
+<?
+	$Mysql="SELECT pregidifetti_main.idpregio, nomepregio, valore FROM pregidifetti_main
+		LEFT JOIN pregidifetti ON pregidifetti.idpregio = pregidifetti_main.idpregio AND idutente = $idutente
+		WHERE idutente IS NULL AND valore <0 AND classe = 'S' ORDER BY valore DESC";
+	$Results = mysql_query($Mysql);
+	while ( $Res = mysql_fetch_array($Results))  {
+?>				<option value='<?=$Res['idpregio']?>'><?=$Res['nomepregio']." ".$Res['valore']?></option>
+<?
+}?>
+				</select></td>
+			<td><?=$dife_s?>/3</td>
+			</form>
+
+			<form name="formps" id="formps" action="ws/pregi.php"  method="post">
+			<td><input type=button id="aps" value="Aggiungi" onclick="controlla('formps','ps')" class="w3-btn w3-white w3-border w3-border-blue w3-round w3-block"></td>
+			<td><select name="ps" id="ps" required><option></option>
+<?
+	$Mysql="SELECT pregidifetti_main.idpregio, nomepregio, valore FROM pregidifetti_main
+		LEFT JOIN pregidifetti ON pregidifetti.idpregio = pregidifetti_main.idpregio AND idutente = $idutente
+		WHERE idutente IS NULL AND valore >0 AND classe = 'S' ORDER BY valore ASC";
+	$Results = mysql_query($Mysql);
+	while ( $Res = mysql_fetch_array($Results))  {
+?>				<option value="<?=$Res['idpregio']?>"  data-classe="S" data-id="<?= $Res['idpregio'] ?>"   data-val="<?=$Res['valore']?>" <?=(($Res['valore']>-$pregitot+$pregipossibili)/*||($Ndife_S==0&&$Res['valore']>$pregipossibili)*/?"disabled":"") ?> > <?=$Res['nomepregio']." ".$Res['valore']?></option>
+<?
+}?>
+				</select></td>
+			<td><?=$pregi_s?>/3</td>
+			</form>
+
+		</tr>
+<!-- mentali -->
+		<tr>
+			<td>Mentali</td>
+			<form name="formdm" action="ws/pregi.php"  method="post">
+			<td><input type=submit id="adm" value="Aggiungi" class="w3-btn w3-white w3-border w3-border-red w3-round w3-block"></td>
+			<td><select name="dm" id="dm" required><option></option>
+<?
+	$Mysql="SELECT pregidifetti_main.idpregio, nomepregio, valore FROM pregidifetti_main
+		LEFT JOIN pregidifetti ON pregidifetti.idpregio = pregidifetti_main.idpregio AND idutente = $idutente
+		WHERE idutente IS NULL AND valore <0 AND classe = 'M' ORDER BY valore DESC";
+	$Results = mysql_query($Mysql);
+	while ( $Res = mysql_fetch_array($Results))  {
+?>				<option value='<?=$Res['idpregio']?>'><?=$Res['nomepregio']." ".$Res['valore']?></option>
+<?
+}?>
+				</select></td>
+			<td><?=$dife_m?>/3</td>
+			</form>
+
+			<form name="formpm" id="formpm" action="ws/pregi.php"  method="post">
+			<td><input type=button id="apm" value="Aggiungi" onclick="controlla('formpm','pm')" class="w3-btn w3-white w3-border w3-border-blue w3-round w3-block"></td>
+			<td><select name="pm" id="pm" required><option></option>
+<?
+	$Mysql="SELECT pregidifetti_main.idpregio, nomepregio, valore FROM pregidifetti_main
+		LEFT JOIN pregidifetti ON pregidifetti.idpregio = pregidifetti_main.idpregio AND idutente = $idutente
+		WHERE idutente IS NULL AND valore >0 AND classe = 'M' ORDER BY valore ASC";
+	$Results = mysql_query($Mysql);
+	while ( $Res = mysql_fetch_array($Results))  {
+?>				<option value="<?=$Res['idpregio']?>"  data-classe="M"  data-id="<?= $Res['idpregio'] ?>"   data-val="<?=$Res['valore']?>" <?=(($Res['valore']>-$pregitot+$pregipossibili)/*||($Ndife_M==0&&$Res['valore']>$pregipossibili)*/?"disabled":"") ?> > <?=$Res['nomepregio']." ".$Res['valore']?></option>
+<?
+}?>
+				</select></td>
+			<td><?=$pregi_m?>/3</td>
+			</form>
+
+		</tr>
+<!-- sovrannaturale -->
+		<tr>
+			<td>Sovrann.</td>
+			<form name="formdx" action="ws/pregi.php"  method="post">
+			<td><input type=submit id="adx" value="Aggiungi" class="w3-btn w3-white w3-border w3-border-red w3-round w3-block"></td>
+			<td><select name="dx" id="dx" required><option></option>
+<?
+	$Mysql="SELECT pregidifetti_main.idpregio, nomepregio, valore FROM pregidifetti_main
+		LEFT JOIN pregidifetti ON pregidifetti.idpregio = pregidifetti_main.idpregio AND idutente = $idutente
+		WHERE idutente IS NULL AND valore <0 AND classe = 'X' ORDER BY valore DESC";
+	$Results = mysql_query($Mysql);
+	while ( $Res = mysql_fetch_array($Results))  {
+?>				<option value='<?=$Res['idpregio']?>'><?=$Res['nomepregio']." ".$Res['valore']?></option>
+<?
+}?>
+				</select></td>
+			<td><?=$dife_x?>/3</td>
+			</form>
+
+			<form name="formpx" id="formpx"  action="ws/pregi.php"  method="post">
+			<td><input type=button id="apx" value="Aggiungi" onclick="controlla('formpx','px')" class="w3-btn w3-white w3-border w3-border-blue w3-round w3-block"></td>
+			<td><select name="px" id="px" required><option></option>
+<?
+	$Mysql="SELECT pregidifetti_main.idpregio, nomepregio, valore FROM pregidifetti_main
+		LEFT JOIN pregidifetti ON pregidifetti.idpregio = pregidifetti_main.idpregio AND idutente = $idutente
+		WHERE idutente IS NULL AND valore >0 AND classe = 'X' ORDER BY valore ASC";
+	$Results = mysql_query($Mysql);
+	while ( $Res = mysql_fetch_array($Results))  {
+?>				<option value="<?=$Res['idpregio']?>"  data-classe="X"  data-id="<?= $Res['idpregio'] ?>"   data-val="<?=$Res['valore']?>" <?=(($Res['valore']>-$pregitot+$pregipossibili)/*||($Ndife_X==0&&$Res['valore']>$pregipossibili)*/?"disabled":"") ?> > <?=$Res['nomepregio']." ".$Res['valore']?></option>
+<?
+}?>
+				</select></td>
+			<td><?=$pregi_x?>/3</td>
+			</form>
+
+		</tr>
+<?
+	if ($adddisciplina==1) {
+
+?>
+		<tr>
+			<td colspan=7 >&nbsp;</td>
+		</tr>
+		<tr>
+			<form name="adddisc" method=post action="">
+			<td colspan=2>Scegli disciplina aggiuntiva</td>
+			<td colspan=2><select name="adddsciplina">
+				<?=($ani==1?"<option value='1'>Animalità</option>":"")?>
+				<?=($aus==1?"<option value='3'>Auspex</option>":"")?>
+				<?=($osc==1?"<option value='8'>Oscurazione</option>":"")?>
+				<?=($po==1?"<option value='17'>Potenza</option>":"")?>
+				<?=($ro==1?"<option value='12'>Robustezza</option>":"")?>
+				<?=($ve==1?"<option value='15'>Velocità</option>":"")?>
+				</select></td>
+			<td><button class="w3-btn w3-white w3-border w3-border-blue w3-round w3-block" onclick="javascript:document.adddisc.submit()">Scegli</button></td>
+			<td>&nbsp;</td>
+			</form>
+		</tr>
+<?
+	}
+?>
+		<tr>
+			<td colspan=7 >&nbsp;</td>
+		</tr>
+		<tr>
+			<td colspan=7 >&nbsp;</td>
+		</tr>
+		<tr>
+			<td colspan=7 ><button class="w3-btn w3-white w3-border w3-border-blue w3-round w3-block" onclick="javascript:window.location.href='main.php'">Indietro</button></td>
+		</tr>
+<!---- -->
+	</table>
+	</div>
+
+<? 	echo "<script>".PHP_EOL;
+	if ( $pregitot-$pregipossibili>=0) {
+		echo "document.getElementById('apf').disabled=true;". PHP_EOL;
+		echo "document.getElementById('aps').disabled=true;". PHP_EOL;
+		echo "document.getElementById('apm').disabled=true;". PHP_EOL;
+		echo "document.getElementById('apx').disabled=true;". PHP_EOL;
+	}
+	if ($dife_f==3 ||$NUMdifetti==5) { echo "document.getElementById('adf').disabled=true;". PHP_EOL; }
+	if ($dife_s==3 ||$NUMdifetti==5) { echo "document.getElementById('ads').disabled=true;". PHP_EOL; }
+	if ($dife_m==3 ||$NUMdifetti==5) { echo "document.getElementById('adm').disabled=true;". PHP_EOL; }
+	if ($dife_x==3 ||$NUMdifetti==5) { echo "document.getElementById('adx').disabled=true;". PHP_EOL; }
+	if ($pregi_f==3 ||$NUMpregi==5) { echo "document.getElementById('apf').disabled=true;". PHP_EOL; }
+	if ($pregi_s==3 ||$NUMpregi==5) { echo "document.getElementById('aps').disabled=true;". PHP_EOL; }
+	if ($pregi_m==3 ||$NUMpregi==5) { echo "document.getElementById('apm').disabled=true;". PHP_EOL; }
+	if ($pregi_x==3 ||$NUMpregi==5) { echo "document.getElementById('apx').disabled=true;". PHP_EOL; }
+
+	echo "console.log(".$NUMpregi.");";
+	echo "</script>"	;
+?>
+
+	<p>&nbsp;
+	<p>&nbsp;
+	<p>&nbsp;
+</body>
