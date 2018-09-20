@@ -78,6 +78,15 @@
 	}
 	$pf = (3+$attutimento)*2 + $robustezza + $schivare ;
 
+
+	// ferita permanente -3 PF 
+	$Mysql="SELECT * from pregidifetti where idpregio =11 and idutente=$idutente";
+	$Result=mysql_query($Mysql);
+	if ( $res=mysql_fetch_array($Result)) {
+		$pf=$pf-3;
+	}
+
+
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">

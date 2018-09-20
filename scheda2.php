@@ -130,6 +130,13 @@
 	}
 	$pf = (3 + $attutimento)*2 + $robustezza + $schivare ;
 
+	// ferita permanente -3 PF
+	$Mysql="SELECT * from pregidifetti where idpregio =11 and idutente=$id";
+	$Result=mysql_query($Mysql);
+	if ( $res=mysql_fetch_array($Result)) {
+		$pf=$pf-3;
+	}
+
 
 ?>
 
@@ -218,7 +225,7 @@
 			<td colspan=3>&nbsp; </td>
 			<td>Res. Dominazione</td>
 			<td class="ald"><?= floor(($intelligenza+$prontezza+$percezione+$carisma+$fdv)/5)?></td>
-		</tr>		
+		</tr>
 		<tr>
 			<td>Sentiero</td>
 			<td><?=$sentiero?> <?=$valsentiero?>/10</td>
