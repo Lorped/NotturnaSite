@@ -412,7 +412,7 @@
 				</tr>
 
 					<tr>
-						<td><form action="wsadmin/newchance.php" method="post">Chance Violazione Masq. <input name="chance"  type=number min=1 max=99 style="width: 40px" value=<?=$chance?> required /> <button class="w3-button w3-small w3-round w3-gray w3-hover-red">Cambia</button></post></td>
+						<td><form action="wsadmin/newchance.php" method="post">Chance Violazione Masq. <input name="chance"  type=number min=1 max=99 style="width: 40px" value=<?=$chance?> required /> <button class="w3-button w3-small w3-round w3-gray w3-hover-red">Cambia</button></form></td>
 						<td>&nbsp;</td>
 			<td class="tdc"><form method=post action="bg2.php" name="cambia">
 				<div class="w3-btn w3-white w3-ripple w3-left-align" ><img src="img/master.png" height="50" width="50" style="vertical-align:middle" onclick="document.cambia.submit()"> <select name="id">
