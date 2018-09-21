@@ -70,6 +70,11 @@
 
 	$MAXSDISC=$maxdisctab[$idstatus][14-$generazione];
 
+	$bloodp = $res['bloodp'];
+	$bloodpmax = $res['bloodpmax'];
+
+	//die ($bloodp." ".$bloodpmax);
+
 
 //die ( "status = ".$idstatus." gen = ".$generazione." maxsdisc = ".$MAXSDISC);
 
@@ -1124,6 +1129,38 @@
 		</tr>
 <?	}
 ?>
+
+
+<!--- fine dfv--->
+
+<tr>
+	<td colspan=8 class="alc title2">Blood Potency</td>
+</tr>
+<tr>
+	<td colspan=8 class="alc"><hr></td>
+</tr>
+<?	if ( $bloodp<$bloodpmax ) {
+?>
+<tr>
+<?		if ( $exp < ($bloodp+1)*4 ) {
+?>
+	<td class="alc">- Aumenta Blood Potency -</td>
+<?		} else {
+?>
+	<td><form method="post" action="ws/px.php"><input type=submit name="BP" value="Aumenta Blood Potency" ></form></td>
+<?		}
+?>
+	<td>&nbsp;</td>
+	<td>Valore attuale</td>
+	<td><?=$bloodp?></td>
+	<td>&nbsp;</td>
+	<td>px: <?= ($bloodp+1)*4 ?></td>
+	<td>&nbsp;</td>
+</tr>
+<?	}
+?>
+
+
 		<tr>
 			<td colspan=8 >&nbsp;</td>
 		</tr>
