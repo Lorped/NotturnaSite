@@ -73,7 +73,7 @@
 		//fine test su fdv
 		//inizio test su ps
 
-		$Mysql="SELECT PScorrenti, sete, lastps FROM personaggio LEFT
+		$Mysql="SELECT PScorrenti, sete, lastps, addsete FROM personaggio LEFT
 			JOIN statuscama ON personaggio.idstatus = statuscama.idstatus
 			JOIN blood ON personaggio.bloodp = blood.bloodp
 			WHERE idutente=$idutente";
