@@ -578,6 +578,14 @@ function controlla() {
 			window.document.getElementById("disc3").innerHTML="Serpentis";
 				iddisc3=13;
 		break;
+		case "14":	// Cappadoci
+			window.document.getElementById("disc1").innerHTML="Auspex";
+			 iddisc1=3;
+			window.document.getElementById("disc2").innerHTML="Negromanzia";
+				iddisc2=99;
+			window.document.getElementById("disc3").innerHTML="Robustezza";
+				iddisc3=12;
+		break;
 	}
 
 	if (TheForm.Clan.value==20) {
@@ -607,12 +615,12 @@ function controlla() {
 	if ( TheForm.Clan.value == "7" ) {
 		window.document.getElementById("tabellatremere").style.display="table";
 	}
-	if ( TheForm.Clan.value == "11" ) {
+	if ( TheForm.Clan.value == "11" || TheForm.Clan.value == "14" ) {
 		window.document.getElementById("tabellagiovanni").style.display="table";
 	}
 
 
-	if ( TheForm.Clan.value != "7" && TheForm.Clan.value != "11" ) { // non giovanni, non tremere
+	if ( TheForm.Clan.value != "7" && TheForm.Clan.value != "11" && TheForm.Clan.value != "14" ) { // non giovanni, non tremere, non cappadoci
 
 
 
@@ -797,7 +805,7 @@ function controlla() {
 
 	}
 
-	if ( TheForm.Clan.value == "11" ) {   //giovanni
+	if ( TheForm.Clan.value == "11" || TheForm.Clan.value == "14") {   //giovanni+cappadoci
 
 		var msgdisc ="";
 		var OKD2=1;

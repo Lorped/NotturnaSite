@@ -205,11 +205,12 @@ $bp=$bp1+$bp2;
 			$zz = "( $vile3 , $idutente , $disc3val, 'N' )";
 		break;
 
+
 	}
 
 /* Inserisco le discipline di clan anche se a zero */
 
-	if ( $Clan != 7 && $Clan != 11 ) {
+	if ( $Clan != 7 && $Clan != 11 && $Clan != 14) {
     	$Mysql=$Mysql2.$xx ;
 	  	mysql_query($Mysql);
 			if (mysql_errno()) die ( mysql_errno().": ".mysql_error()."+". $Mysql );
@@ -322,16 +323,16 @@ $bp=$bp1+$bp2;
   	}
 
   	if ( $Clan == 11 ) {
-		$xx = "( 6 , $idutente , $disc1val, 'S'  )";
+			$xx = "( 6 , $idutente , $disc1val, 'S'  )";
 
-		if ( $valnecro1 == 5 ) {
-			$valnecroX = $valnecro1+$valnecro2;
-		} else {
-			$valnecroX = $valnecro1;
-		}
-		$yy = "( 99 , $idutente , $valnecroX, 'S'  )";
+			if ( $valnecro1 == 5 ) {
+				$valnecroX = $valnecro1+$valnecro2;
+			} else {
+				$valnecroX = $valnecro1;
+			}
+			$yy = "( 99 , $idutente , $valnecroX, 'S'  )";
 
-		$zz = "( 17 , $idutente , $disc3val, 'S'  )";
+			$zz = "( 17 , $idutente , $disc3val, 'S'  )";
 
 /************ INSERIMENTO a Zero */
 
@@ -386,6 +387,53 @@ $bp=$bp1+$bp2;
 //     		echo $MysqlXX;
     	}
   	}
+
+		if ( $Clan == 14 ) {
+			$xx = "( 3 , $idutente , $disc1val, 'S'  )";
+
+			if ( $valnecro1 == 5 ) {
+				$valnecroX = $valnecro1+$valnecro2;
+			} else {
+				$valnecroX = $valnecro1;
+			}
+			$yy = "( 99 , $idutente , $valnecroX, 'S'  )";
+
+			$zz = "( 12 , $idutente , $disc3val, 'S'  )";
+
+/************ INSERIMENTO a Zero */
+
+			$Mysql=$Mysql2.$xx ;
+	    	mysql_query($Mysql);
+
+      		$Mysql=$Mysql2.$yy ;
+    		mysql_query($Mysql);
+				if (mysql_errno()) die ( mysql_errno().": ".mysql_error()."+". $Mysql );
+
+      		$Mysql=$Mysql2.$zz ;
+    		mysql_query($Mysql);
+				if (mysql_errno()) die ( mysql_errno().": ".mysql_error()."+". $Mysql );
+
+    	if ( $valnecro1 != 0 ) {
+      		$MysqlXX = "INSERT INTO necromanzie ( idnecro, livello, idutente, principale ) VALUES ( $Necromanzia1 , $valnecro1 , $idutente , 1 )";
+    		mysql_query ( $MysqlXX );
+				if (mysql_errno()) die ( mysql_errno().": ".mysql_error()."+". $MysqlXX );
+//     		echo $MysqlXX;
+    	}
+    	if ( $valnecro2 != 0 ) {
+      		$MysqlXX = "INSERT INTO necromanzie ( idnecro, livello, idutente, principale ) VALUES ( $Necromanzia2 , $valnecro2 , $idutente , 2 )";
+    		mysql_query ( $MysqlXX );
+				if (mysql_errno()) die ( mysql_errno().": ".mysql_error()."+". $MysqlXX );
+//     		echo $MysqlXX;
+    	}
+    	if ( $valnecro3 != 0 ) {
+      		$MysqlXX = "INSERT INTO necromanzie ( idnecro, livello, idutente, principale ) VALUES ( $Necromanzia3 , $valnecro3 , $idutente , 3 )";
+    		mysql_query ( $MysqlXX );
+				if (mysql_errno()) die ( mysql_errno().": ".mysql_error()."+". $MysqlXX );
+//     		echo $MysqlXX;
+    	}
+  	}
+
+
 
   	if ( $Gregge != 0 ) {
     	$Mysql = "INSERT INTO background ( idback, idutente, livello ) VALUES ( 1, $idutente, $Gregge )";
