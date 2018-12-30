@@ -1,4 +1,4 @@
-<? 
+<?
 	include ('session_start.inc.php');
 	include ('db_start.inc.php');
 
@@ -10,75 +10,78 @@
 	$_SESSION['LastTime']=0;
 
   	$idutente=$_SESSION['idutente'];
-		
+
 
 	$MySql = "SELECT *  FROM personaggio WHERE idutente=$idutente";
 	$Result = mysql_query($MySql);
 	$res = mysql_fetch_array($Result);
- 
+
 	$nome=$res['nomepg'];
 	$idclan=$res['idclan'];
-	
+
 	$link="#";
-	
+
 	switch ($idclan) {
-       
+
 		case 1:   //  Toreador
 			$link = "https://drive.google.com/file/d/0BwbyMyT-GT-UZ2pKb0RzRlZoaVU/view";
 		break;
-		
+
 		case 2:   //  Ventrue
 			$link = "https://drive.google.com/file/d/0BwbyMyT-GT-UTTRodGZXdzdCVXM/view";
 		break;
-		
+
 		case 3:		// Nosferatu
 			$link = "https://drive.google.com/file/d/0BwbyMyT-GT-UUDNmT3llNjZ3UXM/view";
 		break;
-		
+
 		case 4:		// Brujah
 			$link = "https://drive.google.com/file/d/0BwbyMyT-GT-UNFZURFpYR2pfNVk/view";
 		break;
-		
+
 		case 5:		// Gangrel
 			$link = "https://drive.google.com/file/d/0BwbyMyT-GT-UcFRxVFRkNnRLb28/view";
 		break;
-		
+
 		case 6:		// Malkavian
 			$link = "https://drive.google.com/file/d/0BwbyMyT-GT-UZ2dRSW1VOGFWNDQ/view";
-		break;  
-		
+		break;
+
 		case 7:		// Tremere
 			$link = "https://drive.google.com/file/d/0BwbyMyT-GT-US3d3OEpnbV9Ccjg/view";
 		break;
-		
+
 		case 8:		// Lasombra
 			$link = "#";
 		break;
-		
+
 		case 9:		// Tzimisce
 			$link = "#";
 		break;
-		
+
 		case 10:	// Assamiti
 			$link = "https://drive.google.com/file/d/0BwbyMyT-GT-ULXpGWkxLNWZhaDg/view";
 		break;
-		
+
 		case 11:	// Giovanni
 			$link = "https://drive.google.com/file/d/0BwbyMyT-GT-UYTVUZFlNeEo2N0k/view";
 		break;
-		
+
 		case 12:	// Ravnos
 			$link = "https://drive.google.com/file/d/0BwbyMyT-GT-UVTF3QWJ2TzNXZk0/view";
 		break;
-		
+
 		case 13:	// Setiti
 			$link = "https://drive.google.com/file/d/0BwbyMyT-GT-UOUo0dll2NjRDOHc/view";
 		break;
-		
+
 		case 20:	// vili
 			$link = "https://drive.google.com/file/d/0BwbyMyT-GT-UOWhsMExKd2YzTVU/view";
-		break;   
-		
+		break;
+
+		case 14:		// Cappadoci
+			$link = "#";
+		break;
 
 	}
 
@@ -89,18 +92,18 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title>Notturna - Cronaca di Roma</title>
-	<link href="https://fonts.googleapis.com/css?family=Libre+Baskerville" rel="stylesheet"> 	
-	<link href="w3.css" rel="stylesheet"> 	
-	
+	<link href="https://fonts.googleapis.com/css?family=Libre+Baskerville" rel="stylesheet">
+	<link href="w3.css" rel="stylesheet">
+
 	<style type="text/css">
-		
+
 
 		input[type=number] {
 			width:  80px;
 			-moz-appearance: textfield;
-		} 
+		}
 		body {
-			font-family: arial, sans-serif; 
+			font-family: arial, sans-serif;
 			font-size: 1.1em;
 		}
 		.alc {
@@ -119,7 +122,7 @@
 			border-top: 1px solid #000000;
 			margin-top: 0.2em;
     		margin-bottom: 0.2em;
-		} 
+		}
 	</style>
 
 </head>
@@ -129,7 +132,7 @@
 		<tr>
 			<td colspan=2><img src="notturnalogo.png" height=300 width=320></td>
 		</tr>
-	</table>	
+	</table>
 
 	<table style="border:0; cellpadding:1; cellspacing:1;" >
 
@@ -155,12 +158,12 @@
 			<td>
 				<a href="https://drive.google.com/file/d/0BwbyMyT-GT-UaGluODVPczdhRkE/view" class="w3-btn w3-white w3-ripple w3-left-align" style="width:400px;" target="_blank"> Ambientazione Generale</a>
 			</td>
-		</tr>		
+		</tr>
 		<tr>
 			<td>
 				<a href="https://drive.google.com/file/d/0BwbyMyT-GT-UZFBwNmp4SHZ6SFk/view" class="w3-btn w3-white w3-ripple w3-left-align" style="width:400px;" target="_blank"> Regolamento</a>
 			</td>
-		
+
 			<td>
 				<a href="https://drive.google.com/file/d/0BwbyMyT-GT-UR2loVWQwbWh3LXM/view" class="w3-btn w3-white w3-ripple w3-left-align" style="width:400px;" target="_blank"> Usi e Costumi della Camarilla</a>
 			</td>
@@ -174,12 +177,12 @@
 			</td>
 		</tr>
 
-		
-		
+
+
 		<tr>
 			<td colspan=2 class="alc title2" ><hr>Materiale specifico di Clan<hr></td>
 		</tr>
-		<tr>		
+		<tr>
 		<? if ($idclan==7) { ?>
 
 			<td>
@@ -190,7 +193,7 @@
 				<button class="w3-btn w3-white w3-ripple w3-left-align" style="width:400px;" disabled > Rituali Taumaturgici</button>
 			</td>
 		<? } ?>
-		<? if ($idclan==11) { ?>
+		<? if ($idclan==11 || $idclan == 14) { ?>
 			<td>
 				<a href="https://drive.google.com/file/d/0BwbyMyT-GT-UX3VNX1U4T21pejA/view" class="w3-btn w3-white w3-ripple w3-left-align" style="width:400px;" target="_blank"  > Rituali Negromantici</a>
 			</td>
@@ -199,8 +202,8 @@
 				<button class="w3-btn w3-white w3-ripple w3-left-align" style="width:400px;"  disabled > Rituali Negromantici</button>
 			</td>
 		<? } ?>
-		</tr>		
-		<tr>		
+		</tr>
+		<tr>
 		<? if ($idclan==2) { ?>
 			<td>
 				<a href="https://drive.google.com/file/d/0BwbyMyT-GT-UNE1DVEZsT3l2S1E/view" class="w3-btn w3-white w3-ripple w3-left-align" style="width:400px;" target="_blank"  > Info Ventrue</a>
@@ -216,9 +219,7 @@
 		</tr>
 		<tr>
 			<td colspan=2><button class="w3-btn w3-white w3-border w3-border-blue w3-round w3-block" onclick="javascript:window.location.href='main.php'">Indietro</button></td>
-		</tr>			
+		</tr>
 	</table>
 	</div>
 </body>
-	
-		
