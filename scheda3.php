@@ -672,7 +672,7 @@ for ( $i = $prontezza ; $i < 5; $i++) echo "A";
 	$MySql = "SELECT  nomedisc ,livello  FROM discipline
     	LEFT JOIN discipline_main ON discipline_main.iddisciplina=discipline.iddisciplina
         WHERE idutente = $idutente
-        ORDER BY discipline.iddisciplina";
+        ORDER BY  discipline.iddisciplina";
 	$Results = mysql_query($MySql);
 	while ( $res=mysql_fetch_array($Results)) {
 		$liv=$res['livello'];
@@ -990,7 +990,7 @@ for ( $i = $prontezza ; $i < 5; $i++) echo "A";
 				<div class="main-header">Poteri</div>
 				<div class="tabellaarmix">
 
-<? 				$Mysql="SELECT * FROM discipline LEFT JOIN discipline_main ON discipline.iddisciplina = discipline_main.iddisciplina where idutente=$idutente and livello>0 and discipline_main.iddisciplina!=99 and discipline_main.iddisciplina!=98";
+<? 				$Mysql="SELECT * FROM discipline LEFT JOIN discipline_main ON discipline.iddisciplina = discipline_main.iddisciplina where idutente=$idutente and livello>0 and discipline_main.iddisciplina!=99 and discipline_main.iddisciplina!=98 ORDER BY discipline.livello DESC";
 					$Result=mysql_query($Mysql);
 					while ( $res=mysql_fetch_array($Result)) {
 						$aiddisc=$res['iddisciplina'];
