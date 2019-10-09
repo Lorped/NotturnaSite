@@ -2,9 +2,10 @@
 	include ('session_start.inc.php');
 	include ('db_start.inc.php');
 
- 	if (!isset ($_SESSION['idutente'])) die ("Errore, nessuna sessione attiva!");
+ 	if (!isset ($_GET['idutente'])) die ("Errore parametro!");
 
-  $idutente=$_SESSION['idutente'];
+  $idutente=$_GET['idutente'];
+
 
 
 
