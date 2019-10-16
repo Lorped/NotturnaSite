@@ -52,11 +52,11 @@
 		break;
 
 		case 8:		// Lasombra
-			$link = "#";
+			$link = "https://drive.google.com/file/d/1veEpi_TDGZz-xIFbO1PeVfHrprrDISWF/view";
 		break;
 
 		case 9:		// Tzimisce
-			$link = "#";
+			$link = "https://drive.google.com/file/d/1AyN-Ofnhw-m5LQcNMFEHYOnLclb-3N_0/view";
 		break;
 
 		case 10:	// Assamiti
@@ -80,7 +80,7 @@
 		break;
 
 		case 14:		// Cappadoci
-			$link = "#";
+			$link = "https://drive.google.com/file/d/1WqSxecMNGQ0ayh6MLGM-FHCP1LaL0khZ/view";
 		break;
 
 	}
