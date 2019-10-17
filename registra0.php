@@ -517,8 +517,12 @@ function controlla() {
 		case "6":		// Malkavian
 			window.document.getElementById("disc1").innerHTML="Auspex";
 				iddisc1=3;
+				/***
 			window.document.getElementById("disc2").innerHTML="Dominazione";
 				iddisc2=6;
+				***/
+				window.document.getElementById("disc2").innerHTML="Demenza";
+					iddisc2=5;
 			window.document.getElementById("disc3").innerHTML="Oscurazione";
 				iddisc3=8;
 		break;

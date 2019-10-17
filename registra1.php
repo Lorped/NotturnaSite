@@ -166,7 +166,8 @@ $bp=$bp1+$bp2;
 		break;
 		case 6:		// Malkavian
 			$xx = "( 3 , $idutente , $disc1val, 'S' )";
-			$yy = "( 6 , $idutente , $disc2val, 'S' )";
+			/***  $yy = "( 6 , $idutente , $disc2val, 'S' )";  **/
+			$yy = "( 5 , $idutente , $disc2val, 'S' )";
 			$zz = "( 8 , $idutente , $disc3val, 'S' )";
 
 		break;
