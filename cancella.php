@@ -6,7 +6,17 @@
 
   $idutente=$_SESSION['idutente'];
 
+	$Mysql="select count(*) as a from personaggio where idutente=$idutente";
+	$Res=mysql_fetch_array(mysql_query($Mysql));
 
+	$numscheda=$Res['a'];
+
+	$Mysql="select count(*) as a from HUNTERpersonaggio where idutente=$idutente";
+	$Res=mysql_fetch_array(mysql_query($Mysql));
+
+	$numschedaH=$Res['a'];
+
+	if ( $numscheda != 0 )  {   // VAMPIRO !!
 
   $Mysql = "DELETE FROM personaggio WHERE idutente = $idutente";
  	mysql_query($Mysql);
@@ -75,6 +85,33 @@
 	$Mysql = "DELETE FROM logpx  WHERE idutente = $idutente";
 	mysql_query($Mysql);
 	if (mysql_errno()) die ( mysql_errno().": ".mysql_error() );
+
+	}
+	if ( $numschedaH != 0 )  {   // CACCIATORE !!
+		$Mysql = "DELETE FROM HUNTERpersonaggio WHERE idutente = $idutente";
+	 	mysql_query($Mysql);
+		if (mysql_errno()) die ( mysql_errno().": ".mysql_error() );
+
+		$Mysql = "DELETE FROM HUNdiscipline WHERE idutente = $idutente";
+	 	mysql_query($Mysql);
+		if (mysql_errno()) die ( mysql_errno().": ".mysql_error() );
+
+		$Mysql = "DELETE FROM background WHERE idutente = $idutente";
+	 	mysql_query($Mysql);
+		if (mysql_errno()) die ( mysql_errno().": ".mysql_error() );
+
+		$Mysql = "DELETE FROM skill WHERE idutente = $idutente";
+	 	mysql_query($Mysql);
+		if (mysql_errno()) die ( mysql_errno().": ".mysql_error() );
+
+		$Mysql = "DELETE FROM logpx  WHERE idutente = $idutente";
+		mysql_query($Mysql);
+		if (mysql_errno()) die ( mysql_errno().": ".mysql_error() );
+
+		$Mysql = "DELETE FROM contatti WHERE idutente = $idutente";
+	 	mysql_query($Mysql);
+		if (mysql_errno()) die ( mysql_errno().": ".mysql_error() );
+	}
 
   session_write_close();
 	header("Location: main.php", true);

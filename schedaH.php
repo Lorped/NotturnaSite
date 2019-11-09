@@ -13,12 +13,8 @@
 //	$idutente = 1;
 
 
-	$MySql = "SELECT *  FROM personaggio
-		LEFT JOIN clan ON personaggio.idclan=clan.idclan
-		LEFT JOIN statuscama ON personaggio.idstatus=statuscama.idstatus
-		LEFT JOIN sentieri ON personaggio.idsentiero=sentieri.idsentiero
-		LEFT JOIN generazione ON personaggio.generazione=generazione.generazione
-		LEFT JOIN blood ON personaggio.bloodp=blood.bloodp
+	$MySql = "SELECT *  FROM HUNTERpersonaggio
+		LEFT JOIN HUNcospiracy ON HUNTERpersonaggio.idclan=HUNcospiracy.idcospiracy
 		WHERE idutente = $idutente ";
 
 	$Result = mysql_query($MySql);
@@ -27,11 +23,9 @@
 	$nome=$res['nomepg'];
 	$nomeplayer=$res['nomeplayer'];
 
-	$clan=$res['nomeclan'];
-	$generazione=$res['generazione'];
+	$clan=$res['nomecospiracy'];
 
-	$ps=$res['ps'];
-	$psturno=$res['psturno'];
+
 
 	$forza=$res['forza'];
 	$destrezza=$res['destrezza'];
@@ -46,10 +40,8 @@
 	$fdv=$res['fdv'];
 	$fdvmax=$res['fdvmax'];
 	$status=$res['status'];
-	$attivstatus=$res['attivazione'];
 
-	$valsentiero=$res['valsentiero'];
-	$sentiero=$res['sentiero'];
+
 
 
 	$fama1=$res['fama1']; //città
@@ -59,8 +51,7 @@
 	$xp=$res['xp'];
 	$xpspesi=$res['xpspesi'];
 
-	$sete=$res['sete']+$res['addsete'];
-	$bp=$res['bloodp'];
+
 
 	//
 	$rifugio = $res['rifugio'];
@@ -177,35 +168,35 @@
 			<td>Player</td>
 			<td><?=$nomeplayer?></td>
 			<td>&nbsp;</td>
-			<td>Generazione</td>
-			<td class="ald"><?=$generazione?></td>
+			<td>&nbsp;</td>
+			<td class="ald">&nbsp;</td>
 		</tr>
 		<tr>
 			<td>Status</td>
-			<td><?=$status?> [+<?=$attivstatus?>]</td>
-			<td>Clan</td>
+			<td><?=$status?> </td>
+			<td>Cospiracy</td>
 			<td><?=$clan?></td>
 			<td>&nbsp;</td>
 			<td>Forza di volontà</td>
 			<td class="ald"><?=$fdv?>/<?=$fdvmax?></td>
 		</tr>
 		<tr>
-			<td colspan=2>Blood Potency&nbsp;&nbsp;&nbsp;<?=$bp?></td>
+			<td colspan=2>&nbsp; </td>
 			<td colspan=3>&nbsp; </td>
 			<td>Res. Dominazione</td>
 			<td class="ald"><?= floor(($intelligenza+$prontezza+$percezione+$carisma+$fdv)/5)?></td>
 		</tr>
 		<tr>
-			<td>Sentiero</td>
-			<td><?=$sentiero?> <?=$valsentiero?>/10</td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
 			<td>XP</td>
 			<td><?=$xp." (spesi ".$xpspesi.")"?></td>
 			<td>&nbsp;</td>
-			<td>Sete</td>
-			<td class="ald"><?=$sete?></td>
+			<td>&nbsp;</td>
+			<td class="ald">&nbsp;</td>
 		</tr>
 		<tr>
-			<td>Rifugio</td>
+			<td>SafeHouse</td>
 			<td><?=$rifugio?></td>
 			<td>Zona</td>
 			<td><?=$zona?></td>
@@ -244,10 +235,7 @@ for ( $i = 0 ; $i < $fama3; $i++) echo "<img src='img/dot.gif' width='10' height
 for ( $i = $fama3 ; $i < 5; $i++) echo "<img src='img/blank.gif' width='10' height='10' >";
 ?></td>
 		</tr>
-		<tr>
-			<td colspan=4>Ruolo nel Clan &nbsp;&nbsp; _________________________</td>
-			<td colspan=4>Ruolo nella Camarilla &nbsp;&nbsp; _________________________</td>
-		</tr>
+
 	</table>
 	</div>
 	<div align="center">

@@ -16,6 +16,12 @@
 
 	$numscheda=$Res['a'];
 
+	$Mysql="select count(*) as a from HUNTERpersonaggio where idutente=$idutente";
+	$Res=mysql_fetch_array(mysql_query($Mysql));
+
+	$numschedaH=$Res['a'];
+
+
 
 	$admin=0;
 	$Mysql="select admin from utente where idutente=$idutente";
@@ -26,90 +32,139 @@
 		$admin=1;
 	} else {
 
+
+		if ( $numscheda == 1) {
 		//come utente normale faccio check su fdv
 
-		$Mysql="SELECT fdv,fdvmax,lastfdv FROM personaggio WHERE idutente=$idutente";
-		$Result=mysql_query ($Mysql);
-		$res=mysql_fetch_array($Result);
-
-		$fdv=$res['fdv'];
-		$fdvmax=$res['fdvmax'];
-		$lastfdv=$res['lastfdv'];
-
-		if ( $fdv == $fdvmax ) {  // tutto ok
-
-			$Mysql="UPDATE personaggio SET lastfdv=NOW()  WHERE idutente=$idutente";
+			$Mysql="SELECT fdv,fdvmax,lastfdv FROM personaggio WHERE idutente=$idutente";
 			$Result=mysql_query ($Mysql);
-		} else {
+			$res=mysql_fetch_array($Result);
 
-			$base=strtotime("2017-01-01 18:00:00");
-			$qlastftv=strtotime($lastfdv);
-			$now=time();
+			$fdv=$res['fdv'];
+			$fdvmax=$res['fdvmax'];
+			$lastfdv=$res['lastfdv'];
 
-			$tramonti0=floor( ($qlastftv - $base)/( 24*60*60 )) ;
-			$tramonti1=floor(($now - $base) / ( 24*60*60 ) );
+			if ( $fdv == $fdvmax ) {  // tutto ok
 
-			$difftramonti=$tramonti1-$tramonti0;
-
-
-			if ( $difftramonti > 0 ) {
-
-				$newfdv=$fdv+$difftramonti;
-				if ($newfdv > $fdvmax)  {$newfdv=$fdvmax ;}
-
-				$newlastfdv=$base + $tramonti1*( 24*60*60 )+1;
-
-				$newlastfdvstring=date("Y-m-d H:i:s",$newlastfdv );
-
-				$Mysql="UPDATE personaggio SET fdv = $newfdv , lastfdv = '$newlastfdvstring' WHERE idutente=$idutente";
+				$Mysql="UPDATE personaggio SET lastfdv=NOW()  WHERE idutente=$idutente";
 				$Result=mysql_query ($Mysql);
-
 			} else {
-				// echo "<br>da quando ho controlato fdv non è passato un tramonto";
+
+				$base=strtotime("2017-01-01 18:00:00");
+				$qlastftv=strtotime($lastfdv);
+				$now=time();
+
+				$tramonti0=floor( ($qlastftv - $base)/( 24*60*60 )) ;
+				$tramonti1=floor(($now - $base) / ( 24*60*60 ) );
+
+				$difftramonti=$tramonti1-$tramonti0;
+
+
+				if ( $difftramonti > 0 ) {
+
+					$newfdv=$fdv+$difftramonti;
+					if ($newfdv > $fdvmax)  {$newfdv=$fdvmax ;}
+
+					$newlastfdv=$base + $tramonti1*( 24*60*60 )+1;
+
+					$newlastfdvstring=date("Y-m-d H:i:s",$newlastfdv );
+
+					$Mysql="UPDATE personaggio SET fdv = $newfdv , lastfdv = '$newlastfdvstring' WHERE idutente=$idutente";
+					$Result=mysql_query ($Mysql);
+
+				} else {
+					// echo "<br>da quando ho controlato fdv non è passato un tramonto";
+				}
+
 			}
 
+			//fine test su fdv
+			//inizio test su ps
+
+			$Mysql="SELECT PScorrenti, sete, lastps, addsete FROM personaggio LEFT
+				JOIN statuscama ON personaggio.idstatus = statuscama.idstatus
+				JOIN blood ON personaggio.bloodp = blood.bloodp
+				WHERE idutente=$idutente";
+			$Result=mysql_query ($Mysql);
+			$res=mysql_fetch_array($Result);
+
+			$PScorrenti=$res['PScorrenti'];
+			$ps=$res['sete']+$res['addsete'];
+			$lastps=$res['lastps'];
+
+			if ( $PScorrenti == $ps ) {  // tutto ok
+				//
+			} else {
+				$now=time();
+				$qlastps=strtotime($lastps);
+
+				$diff =  ($now - $qlastps) / (24*60*60);
+
+				if ( $diff > 1 ) {
+					$newlastps=date("Y-m-d H:i:s",$now );
+					$Mysql="UPDATE personaggio SET PScorrenti = $ps , lastps = '$newlastps' WHERE idutente=$idutente";
+					$Result=mysql_query ($Mysql);
+				}
+
+			}
+
+			//fine test su ps
+			// legami
+		  $Mysql="DELETE FROM legami WHERE target = $idutente and livello = 1 and (DATE_ADD(dataultima, INTERVAL 60 DAY) < NOW())";
+	    $Result = mysql_query($Mysql);
+		  $Mysql="UPDATE legami SET livello=1 , dataultima=NOW() WHERE target = $idutente and livello = 2 and (DATE_ADD(dataultima, INTERVAL 150 DAY) < NOW())";
+	    $Result = mysql_query($Mysql);
+	    $Mysql="UPDATE legami SET livello=2 , dataultima=NOW() WHERE target = $idutente and livello = 3 and (DATE_ADD(dataultima, INTERVAL 300 DAY) < NOW())";
+	    $Result = mysql_query($Mysql);
+
+			//fine test legami
 		}
 
-		//fine test su fdv
-		//inizio test su ps
+		if ( $numschedaH == 1) {
+			$Mysql="SELECT fdv,fdvmax,lastfdv FROM HUNTERpersonaggio WHERE idutente=$idutente";
+			$Result=mysql_query ($Mysql);
+			$res=mysql_fetch_array($Result);
 
-		$Mysql="SELECT PScorrenti, sete, lastps, addsete FROM personaggio LEFT
-			JOIN statuscama ON personaggio.idstatus = statuscama.idstatus
-			JOIN blood ON personaggio.bloodp = blood.bloodp
-			WHERE idutente=$idutente";
-		$Result=mysql_query ($Mysql);
-		$res=mysql_fetch_array($Result);
+			$fdv=$res['fdv'];
+			$fdvmax=$res['fdvmax'];
+			$lastfdv=$res['lastfdv'];
 
-		$PScorrenti=$res['PScorrenti'];
-		$ps=$res['sete']+$res['addsete'];
-		$lastps=$res['lastps'];
+			if ( $fdv == $fdvmax ) {  // tutto ok
 
-		if ( $PScorrenti == $ps ) {  // tutto ok
-			//
-		} else {
-			$now=time();
-			$qlastps=strtotime($lastps);
-
-			$diff =  ($now - $qlastps) / (24*60*60);
-
-			if ( $diff > 1 ) {
-				$newlastps=date("Y-m-d H:i:s",$now );
-				$Mysql="UPDATE personaggio SET PScorrenti = $ps , lastps = '$newlastps' WHERE idutente=$idutente";
+				$Mysql="UPDATE HUNTERpersonaggio SET lastfdv=NOW()  WHERE idutente=$idutente";
 				$Result=mysql_query ($Mysql);
+			} else {
+
+				$base=strtotime("2017-01-01 18:00:00");
+				$qlastftv=strtotime($lastfdv);
+				$now=time();
+
+				$tramonti0=floor( ($qlastftv - $base)/( 24*60*60 )) ;
+				$tramonti1=floor(($now - $base) / ( 24*60*60 ) );
+
+				$difftramonti=$tramonti1-$tramonti0;
+
+
+				if ( $difftramonti > 0 ) {
+
+					$newfdv=$fdv+$difftramonti;
+					if ($newfdv > $fdvmax)  {$newfdv=$fdvmax ;}
+
+					$newlastfdv=$base + $tramonti1*( 24*60*60 )+1;
+
+					$newlastfdvstring=date("Y-m-d H:i:s",$newlastfdv );
+
+					$Mysql="UPDATE HUNTERpersonaggio SET fdv = $newfdv , lastfdv = '$newlastfdvstring' WHERE idutente=$idutente";
+					$Result=mysql_query ($Mysql);
+
+				} else {
+					// echo "<br>da quando ho controlato fdv non è passato un tramonto";
+				}
+
 			}
 
+			//fine test su fdv
 		}
-
-		//fine test su ps
-		// legami
-	  $Mysql="DELETE FROM legami WHERE target = $idutente and livello = 1 and (DATE_ADD(dataultima, INTERVAL 60 DAY) < NOW())";
-    $Result = mysql_query($Mysql);
-	  $Mysql="UPDATE legami SET livello=1 , dataultima=NOW() WHERE target = $idutente and livello = 2 and (DATE_ADD(dataultima, INTERVAL 150 DAY) < NOW())";
-    $Result = mysql_query($Mysql);
-    $Mysql="UPDATE legami SET livello=2 , dataultima=NOW() WHERE target = $idutente and livello = 3 and (DATE_ADD(dataultima, INTERVAL 300 DAY) < NOW())";
-    $Result = mysql_query($Mysql);
-
-		//fine test legami
 
 	}
 
@@ -428,17 +483,21 @@
 		</tr>
 <?
 } else {
-		if ( $numscheda == 0   ) { ?>
+		if ( $numscheda == 0  && $numschedaH == 0 ) { ?>
 		<tr>
 			<td class="tdc">
 				<!-- <a href="registra0.php"><div class="w3-btn w3-white w3-ripple w3-left-align" style="width:300px;"><img src="http://via.placeholder.com/50x50" style="vertical-align:middle"> Crea la scheda</div></a> -->
-				<a href="registra0.php" class="w3-btn w3-white w3-ripple w3-left-align" style="width:350px;"><img src="img/edit.png" height="50" width="50" style="vertical-align:middle"> Crea la scheda</a>
+				<a href="registra0.php" class="w3-btn w3-white w3-ripple w3-left-align" style="width:350px;"><img src="img/edit.png" height="50" width="50" style="vertical-align:middle"> Crea la scheda VAMPIRI</a>
 			</td>
-			<td>&nbsp;</td>
+			<td class="tdc">
+				<!-- <a href="registra0.php"><div class="w3-btn w3-white w3-ripple w3-left-align" style="width:300px;"><img src="http://via.placeholder.com/50x50" style="vertical-align:middle"> Crea la scheda</div></a> -->
+				<a href="HUNTERregistra0.php" class="w3-btn w3-white w3-ripple w3-left-align" style="width:350px;"><img src="img/edit.png" height="50" width="50" style="vertical-align:middle"> Crea la scheda HUNTERS</a>
+			</td>
 			<td>&nbsp;</td>
 		</tr>
 <? }  else { ?>
 		<tr>
+			<? if ($numscheda == 1) { ?>
 			<td class="tdc">
 				<a href="scheda.php" class="w3-btn w3-white w3-ripple w3-left-align" style="width:350px;"><img src="img/observe.png" height="50" width="50" style="vertical-align:middle"> Visualizza la scheda</a>
 			</td>
@@ -448,6 +507,17 @@
 			<td class="tdc">
 				<a href="bio.php" class="w3-btn w3-white w3-ripple w3-left-align" style="width:350px;"><img src="img/user2.png" height="50" width="50" style="vertical-align:middle"> Inserisci Biografia e Annotazioni</a>
 			</td>
+		<? } else {  ?>
+			<td class="tdc">
+				<a href="schedaH.php" class="w3-btn w3-white w3-ripple w3-left-align" style="width:350px;"><img src="img/observe.png" height="50" width="50" style="vertical-align:middle"> Visualizza la scheda</a>
+			</td>
+			<td class="tdc">
+				&nbsp;
+			</td>
+			<td class="tdc">
+				<a href="bioH.php" class="w3-btn w3-white w3-ripple w3-left-align" style="width:350px;"><img src="img/user2.png" height="50" width="50" style="vertical-align:middle"> Inserisci Biografia e Annotazioni</a>
+			</td>
+		<? } ?>
 
 		</tr>
 		<tr>
@@ -463,7 +533,11 @@
 		</tr>
 		<tr>
 			<td class="tdc">
-				<a href="sceglipoteri.php" class="w3-btn w3-white w3-ripple w3-left-align" style="width:350px;"><img src="img/ankh.png" height="50" width="50" style="vertical-align:middle"> Scegli Poteri</a>
+				<? if ($numscheda == 1) { ?>
+					<a href="sceglipoteri.php" class="w3-btn w3-white w3-ripple w3-left-align" style="width:350px;"><img src="img/ankh.png" height="50" width="50" style="vertical-align:middle"> Scegli Poteri</a>
+				<? } else { ?>
+					&nbsp;
+				<? } ?>
 			</td>
 			<td class="tdc">
 				<a href="logpx.php" class="w3-btn w3-white w3-ripple w3-left-align" style="width:350px;"><img src="img/logs.png" height="50" width="50" style="vertical-align:middle"> Visualizza Log PX</a>

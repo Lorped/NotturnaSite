@@ -10,14 +10,20 @@
 
   $idutente=$_SESSION['idutente'];
 
-/*
+	$x1=0;
+	$x2=0;
 	$Mysql="select count(*) as a from personaggio where idutente=$idutente";
 	$Results=mysql_query($Mysql);
 	$Res=mysql_fetch_array($Results);
-  if ( $Res['a'] != 0 ) {
+	$x1 = $Res['a'];
+	$Mysql="select count(*) as a from HUNTERpersonaggio where idutente=$idutente";
+	$Results=mysql_query($Mysql);
+	$Res=mysql_fetch_array($Results);
+	$x2 = $Res['a'];
+  if ( $x1+$x2 != 0 ) {
 		header("Location: main.php", true);
 	}
-*/
+
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -110,6 +116,24 @@ function controlla() {
 	} else {
 		window.document.getElementById("aclan").innerHTML="";
 		window.document.getElementById("astatus").innerHTML=LVL1[TheForm.Clan.value];
+
+		window.document.getElementById("tabella1").style.display="none";
+		window.document.getElementById("tabella2").style.display="none";
+		window.document.getElementById("tabella3").style.display="none";
+
+		switch (TheForm.Clan.value) {
+			case "1":
+					window.document.getElementById("tabella1").style.display="table";
+				break;
+			case "2":
+					window.document.getElementById("tabella2").style.display="table";
+				break;
+			case "3":
+					window.document.getElementById("tabella3").style.display="table";
+				break;
+			default:
+
+		}
 	}
 
 	var NUMBACK=6;   // punti background
@@ -321,12 +345,56 @@ function controlla() {
 
 	// --------------- DISCIPLINE ------------
 
+	switch (TheForm.Clan.value) {
+		case "1":
+
+<?
+		$MySql = "SELECT * FROM HUNdiscipline_main WHERE idcospiracy = 1 and minlvl < 3 ";
+		$Results = mysql_query($MySql);
+		$i=0;
+		while ( $Res = mysql_fetch_array($Results))  {
+			$i++;
+?>
+			var X<?=$i?> = 0 ; if (TheForm.D1<?=$Res['iddisciplina']?>.checked==true || TheForm.D1<?=$Res['iddisciplina']?>.length > 1 ) { X<?=$i?> =parseInt(TheForm.D1<?=$Res['iddisciplina']?>.value);} if (isNaN(X<?=$i?>)) {X<?=$i?> =0;}
+<?
+		}
+?>
 
 
-	var X11 = 0 ; if (TheForm.D11.checked==true || TheForm.D11.length > 1 ) { X11=parseInt(TheForm.D11.value);} if (isNaN(X11)) {X11=0;}
-	var X12 = 0 ; if (TheForm.D12.checked==true || TheForm.D12.length > 1 ) { X12=parseInt(TheForm.D12.value);} if (isNaN(X12)) {X12=0;}
-	var X13 = 0 ; if (TheForm.D13.checked==true || TheForm.D13.length > 1 ) { X13=parseInt(TheForm.D13.value);} if (isNaN(X13)) {X13=0;}
-	var X14 = 0 ; if (TheForm.D14.checked==true || TheForm.D14.length > 1 ) { X14=parseInt(TheForm.D14.value);} if (isNaN(X14)) {X14=0;}
+			break;
+		case "2":
+		<?
+				$MySql = "SELECT * FROM HUNdiscipline_main WHERE idcospiracy = 2 and minlvl < 3 ";
+				$Results = mysql_query($MySql);
+				$i=0;
+				while ( $Res = mysql_fetch_array($Results))  {
+					$i++;
+		?>
+					var X<?=$i?> = 0 ; if (TheForm.D2<?=$Res['iddisciplina']?>.checked==true || TheForm.D2<?=$Res['iddisciplina']?>.length > 1 ) { X<?=$i?>=parseInt(TheForm.D2<?=$Res['iddisciplina']?>.value);} if (isNaN(X<?=$i?>)) {X<?=$i?>=0;}
+		<?
+				}
+		?>
+			var X4 = 0
+			break;
+		case "3":
+		<?
+				$MySql = "SELECT * FROM HUNdiscipline_main WHERE idcospiracy = 3 and minlvl < 3 ";
+				$Results = mysql_query($MySql);
+				$i=0;
+				while ( $Res = mysql_fetch_array($Results))  {
+					$i++;
+		?>
+					var X<?=$i?> = 0 ; if (TheForm.D3<?=$Res['iddisciplina']?>.checked==true || TheForm.D3<?=$Res['iddisciplina']?>.length > 1 ) { X<?=$i?>=parseInt(TheForm.D3<?=$Res['iddisciplina']?>.value);} if (isNaN(X<?=$i?>)) {X<?=$i?>=0;}
+		<?
+				}
+		?>
+			var X4 = 0
+			break;
+		default:
+
+	}
+
+
 
 	//var D15=parseInt(TheForm.D15.value);
 	//var D16=parseInt(TheForm.D16.value);
@@ -334,14 +402,14 @@ function controlla() {
 	var contauno = 0;
 	var contadue = 0;
 
-	if (X11 == 1 ) { contauno ++};
-	if (X12 == 1 ) { contauno ++};
-	if (X13 == 1 ) { contauno ++};
-	if (X14 == 1 ) { contauno ++};
-	if (X11 == 2 ) { contadue ++};
-	if (X12 == 2 ) { contadue ++};
-	if (X13 == 2 ) { contadue ++};
-	if (X14 == 2 ) { contadue ++};
+	if (X1 == 1 ) { contauno ++};
+	if (X2 == 1 ) { contauno ++};
+	if (X3 == 1 ) { contauno ++};
+	if (X4 == 1 ) { contauno ++};
+	if (X1 == 2 ) { contadue ++};
+	if (X2 == 2 ) { contadue ++};
+	if (X3 == 2 ) { contadue ++};
+	if (X4 == 2 ) { contadue ++};
 
 
 	if (contauno == 0 || (contauno ==1 && contadue != 1 ) || (contauno ==2 && contadue != 0 ) || (contauno >2)  ) {
@@ -481,7 +549,7 @@ while ( $Res = mysql_fetch_array($Results))  { ?>
 
 <!-- <body bgcolor="#000000" color="#cccccc" link="#cc0000" alink="#eeeeee" vlink="#cc0000"> -->
 <body>
-<form id="Form0" name="Form0" method="post" action="registra1.php">
+<form id="Form0" name="Form0" method="post" action="HUNTERregistra1.php">
 
   <table width="65%" border="0" align="center" cellpadding="1" cellspacing="1">
 		<tr>
@@ -511,7 +579,7 @@ while ( $Res = mysql_fetch_array($Results))  { ?>
     	<tr>
 			<td >Cospiracy </td>
 			<td colspan="2" class="alc">
-        		<select name="Cospiracy" id="Clan" onchange="controlla()">
+        		<select name="Clan" id="Clan" onchange="controlla()">
         		<option value=''></option>
 <?
 $MySql = "SELECT * FROM HUNcospiracy ";
@@ -694,27 +762,31 @@ while ( $Res = mysql_fetch_array($Results))  {
     	<td colspan="6">&nbsp;</td>
     </tr>
 
-		<table width="65%" border="0" align="center" cellpadding="1" cellspacing="1" id="tabella1" style="display: xnone;">
+		<table width="65%" border="0" align="center" cellpadding="1" cellspacing="1" id="tabella1" style="display: none;">
 
 				<?
-				 	$MySql = "SELECT * FROM HUNdiscipline WHERE idcospiracy = 1 and minlvl < 3 ";
+				 	$MySql = "SELECT * FROM HUNdiscipline_main WHERE idcospiracy = 1 and minlvl < 3 ";
 					$Results = mysql_query($MySql);
 					while ( $Res = mysql_fetch_array($Results))  {
 						if ($Res['minlvl']==$Res['maxlvl']) {
 ?>
 						<tr>
-							<td><input type='checkbox' name="D1<?=$Res['iddisciplina']?>" value="<?=$Res['minlvl']?>" onchange="controlla()"></td>
-							<td><?=$Res['nomedisc']?></td>
-							<td><?=$Res['minlvl']?></td>
+							<td width="10%">&nbsp;<input type='checkbox' name="D1<?=$Res['iddisciplina']?>" value="<?=$Res['minlvl']?>" onchange="controlla()"></td>
+							<td width="30%"><?=$Res['nomedisc']?></td>
+							<td width="10%"><?=$Res['minlvl']?></td>
+							<td width="50%">&nbsp;</td>
+
 						</tr>
 <?
 						} else {
 							for ( $i = $Res['minlvl'] ; $i < 3 ; $i ++) {
 								?>
 														<tr>
-															<td><input type='radio' name="D1<?=$Res['iddisciplina']?>" value="<?=$i?>" onchange="controlla()"></td>
-															<td><?=$Res['nomedisc']?></td>
-															<td><?=$i?></td>
+															<td width="10%"><input type='radio' name="D1<?=$Res['iddisciplina']?>" value="<?=$i?>" onchange="controlla()"></td>
+															<td width="30%"><?=$Res['nomedisc']?></td>
+															<td width="10%"><?=$i?></td>
+															<td width="50%">&nbsp;</td>
+
 														</tr>
 								<?
 							}
@@ -742,7 +814,108 @@ while ( $Res = mysql_fetch_array($Results))  {
 
 		</table>
 
+		<table width="65%" border="0" align="center" cellpadding="1" cellspacing="1" id="tabella2" style="display: none;">
 
+				<?
+					$MySql = "SELECT * FROM HUNdiscipline_main WHERE idcospiracy = 2 and minlvl < 3 ";
+					$Results = mysql_query($MySql);
+					while ( $Res = mysql_fetch_array($Results))  {
+						if ($Res['minlvl']==$Res['maxlvl']) {
+		?>
+						<tr>
+							<td width="10%"><input type='checkbox' name="D2<?=$Res['iddisciplina']?>" value="<?=$Res['minlvl']?>" onchange="controlla()"></td>
+							<td width="30%"><?=$Res['nomedisc']?></td>
+							<td width="10%"><?=$Res['minlvl']?></td>
+							<td width="50%">&nbsp;</td>
+
+						</tr>
+		<?
+						} else {
+							for ( $i = $Res['minlvl'] ; $i < 3 ; $i ++) {
+								?>
+														<tr>
+															<td width="10%"><input type='radio' name="D2<?=$Res['iddisciplina']?>" value="<?=$i?>" onchange="controlla()"></td>
+															<td width="30%"><?=$Res['nomedisc']?></td>
+															<td width="10%"><?=$i?></td>
+															<td width="50%">&nbsp;</td>
+
+														</tr>
+								<?
+							}
+							?>
+						<script>
+							var myRadios = document.getElementsByName('D2<?=$Res['iddisciplina']?>');
+							var setCheck;
+							var x = 0;
+							for(x = 0; x < myRadios.length; x++){
+								myRadios[x].onclick = function(){
+									if(setCheck != this){
+											 setCheck = this;
+									}else{
+											this.checked = false;
+											setCheck = null;
+											controlla();
+									}
+								};
+							}
+						</script>
+							<?
+						}
+					}
+				?>
+
+		</table>
+
+		<table width="65%" border="0" align="center" cellpadding="1" cellspacing="1" id="tabella3" style="display: none;">
+
+				<?
+					$MySql = "SELECT * FROM HUNdiscipline_main WHERE idcospiracy = 3 and minlvl < 3 ";
+					$Results = mysql_query($MySql);
+					while ( $Res = mysql_fetch_array($Results))  {
+						if ($Res['minlvl']==$Res['maxlvl']) {
+		?>
+						<tr>
+							<td width="10%"><input type='checkbox' name="D3<?=$Res['iddisciplina']?>" value="<?=$Res['minlvl']?>" onchange="controlla()"></td>
+							<td width="30%"><?=$Res['nomedisc']?></td>
+							<td width="10%"><?=$Res['minlvl']?></td>
+							<td width="50%">&nbsp;</td>
+
+						</tr>
+		<?
+						} else {
+							for ( $i = $Res['minlvl'] ; $i < 3 ; $i ++) {
+								?>
+														<tr>
+															<td width="10%"><input type='radio' name="D3<?=$Res['iddisciplina']?>" value="<?=$i?>" onchange="controlla()"></td>
+															<td width="30%"><?=$Res['nomedisc']?></td>
+															<td width="10%"><?=$i?></td>
+															<td width="50%">&nbsp;</td>
+														</tr>
+								<?
+							}
+							?>
+						<script>
+							var myRadios = document.getElementsByName('D3<?=$Res['iddisciplina']?>');
+							var setCheck;
+							var x = 0;
+							for(x = 0; x < myRadios.length; x++){
+								myRadios[x].onclick = function(){
+									if(setCheck != this){
+											 setCheck = this;
+									}else{
+											this.checked = false;
+											setCheck = null;
+											controlla();
+									}
+								};
+							}
+						</script>
+							<?
+						}
+					}
+				?>
+
+		</table>
 
 		<tr>
     	<td colspan="6">&nbsp;</td>
