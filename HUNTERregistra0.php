@@ -80,6 +80,7 @@
 </style>
 
 <script>
+var LVL1 = [];
 function controlla() {
 
 	var TheForm = document.Form0;
@@ -102,13 +103,13 @@ function controlla() {
 
 
 
-
   if (TheForm.Clan.value == "") {
 		OK=0;
 		window.document.getElementById("aclan").innerHTML="Definire la Cospiracy del personaggio";
 		window.document.getElementById("aclan").style.color="#F00";
 	} else {
 		window.document.getElementById("aclan").innerHTML="";
+		window.document.getElementById("astatus").innerHTML=LVL1[TheForm.Clan.value];
 	}
 
 	var NUMBACK=6;   // punti background
@@ -245,21 +246,6 @@ function controlla() {
 
 
 
-	/*****
-	TheForm.Forza.max=MAXSTAT;
-	TheForm.Destrezza.max=MAXSTAT;
-	TheForm.Attutimento.max=MAXSTAT;
-	TheForm.Carisma.max=MAXSTAT;
-	TheForm.Persuasione.max=MAXSTAT;
-	TheForm.Saggezza.max=MAXSTAT;
-	TheForm.Percezione.max=MAXSTAT;
-	TheForm.Intelligenza.max=MAXSTAT;
-	TheForm.Prontezza.max=MAXSTAT;
-	******/
-
-
-
-
 
 
 
@@ -337,45 +323,34 @@ function controlla() {
 
 
 
+	var X11 = 0 ; if (TheForm.D11.checked==true || TheForm.D11.length > 1 ) { X11=parseInt(TheForm.D11.value);} if (isNaN(X11)) {X11=0;}
+	var X12 = 0 ; if (TheForm.D12.checked==true || TheForm.D12.length > 1 ) { X12=parseInt(TheForm.D12.value);} if (isNaN(X12)) {X12=0;}
+	var X13 = 0 ; if (TheForm.D13.checked==true || TheForm.D13.length > 1 ) { X13=parseInt(TheForm.D13.value);} if (isNaN(X13)) {X13=0;}
+	var X14 = 0 ; if (TheForm.D14.checked==true || TheForm.D14.length > 1 ) { X14=parseInt(TheForm.D14.value);} if (isNaN(X14)) {X14=0;}
+
+	//var D15=parseInt(TheForm.D15.value);
+	//var D16=parseInt(TheForm.D16.value);
+
+	var contauno = 0;
+	var contadue = 0;
+
+	if (X11 == 1 ) { contauno ++};
+	if (X12 == 1 ) { contauno ++};
+	if (X13 == 1 ) { contauno ++};
+	if (X14 == 1 ) { contauno ++};
+	if (X11 == 2 ) { contadue ++};
+	if (X12 == 2 ) { contadue ++};
+	if (X13 == 2 ) { contadue ++};
+	if (X14 == 2 ) { contadue ++};
 
 
-	var iddisc1=0;
-	var iddisc2=0;
-	var iddisc3=0;
-
-	switch (TheForm.Clan.value ) {
-		case "1":   //  Toreador
-			window.document.getElementById("disc1").innerHTML="Ascendente";
-			 iddisc1=2;
-			window.document.getElementById("disc2").innerHTML="Auspex";
-			 iddisc2=3;
-			window.document.getElementById("disc3").innerHTML="Velocità";
-				iddisc3=15;
-		break;
-	  case "2":   //  Ventrue
-			window.document.getElementById("disc1").innerHTML="Ascendente";
-			 iddisc1=2;
-			window.document.getElementById("disc2").innerHTML="Dominazione";
-				iddisc2=6;
-			window.document.getElementById("disc3").innerHTML="Robustezza";
-				iddisc3=12;
-		break;
-		case "3":		// Nosferatu
-			window.document.getElementById("disc1").innerHTML="Animalità";
-				iddisc1=1;
-			window.document.getElementById("disc2").innerHTML="Oscurazione";
-				iddisc2=8;
-			window.document.getElementById("disc3").innerHTML="Potenza";
-				iddisc3=17;
-		break;
-
+	if (contauno == 0 || (contauno ==1 && contadue != 1 ) || (contauno ==2 && contadue != 0 ) || (contauno >2)  ) {
+		OK = 0 ;
+		window.document.getElementById("adisc").innerHTML="Verificare poteri";
+		window.document.getElementById("adisc").style.color="#F00";
+	} else {
+		window.document.getElementById("adisc").innerHTML="";
 	}
-
-
-
-
-
-
 
 
 
@@ -471,9 +446,6 @@ while ( $Res = mysql_fetch_array($Results))  { ?>
 	var fdv=2;
 
 
-
-
-
 	// --------------- FINE ------------
 
 
@@ -491,9 +463,7 @@ while ( $Res = mysql_fetch_array($Results))  { ?>
 
 	var Pf = 8 ;
 	Pf = ( 3 + Attutimento )*2 ;
-	if (iddisc1 == 12 )  { Pf += disc1val };
-	if (iddisc2 == 12 )  { Pf += disc2val };
-	if (iddisc3 == 12 )  { Pf += disc3val };
+
 
 	Pf += A28 ;  /* schivare */
 	window.document.getElementById("apf").innerHTML=Pf;
@@ -547,7 +517,9 @@ while ( $Res = mysql_fetch_array($Results))  { ?>
 $MySql = "SELECT * FROM HUNcospiracy ";
 $Results = mysql_query($MySql);
 while ( $Res = mysql_fetch_array($Results))  {
-	?> <option value='<?=$Res['idcospiracy']?>'><?=$Res['nomecospiracy']?></option> <?
+	?> <option value='<?=$Res['idcospiracy']?>'><?=$Res['nomecospiracy']?></option>
+	<script>  LVL1 [<?=$Res['idcospiracy']?>] = '<?=$Res['lvl1']?>';</script>
+	<?
 }
 
 ?>
@@ -555,7 +527,7 @@ while ( $Res = mysql_fetch_array($Results))  {
 			</td>
 			<td >Status iniziale</td>
 			<td colspan="2" class="alc">
-					<span id=astatus></span>- - -</td>
+					<span id=astatus></span></td>
 			</td>
 			<tr>
 			<td colspan="6" align="center"><span id="aclan">&nbsp;</span></td>
@@ -715,229 +687,75 @@ while ( $Res = mysql_fetch_array($Results))  {
 		<tr>
       		<td colspan="6">&nbsp;</td>
 		</tr>
-    	<tr>
-			<td colspan="6"><div align="center" ><hr> Passo 4 - Discipline <hr></div></td>
-    	</tr>
-    	<tr>
-      		<td colspan="6">&nbsp;</td>
-    	</tr>
-		<tr>
-			<td colspan="6">
-			<table id="tabellavili" width="100%" border="0" align="center" cellpadding="1" cellspacing="1" style="display: none">
-			<tr>
-			<td>Disciplina1</td>
-			<td><select name="vile1" id="vile1" onchange="controlla()">
-<?
-			$mysql="SELECT * FROM discipline_main WHERE vili=1";
-			$result=mysql_query($mysql);
-			while ($res=mysql_fetch_array($result) ) {
-?>
-			<option value="<?=$res['iddisciplina']?>" label="<?=$res['nomedisc']?>" ><?=$res['nomedisc']?></option>
-<?
-			}
-?>
-				</select></td>
-			<td>Disciplina2</td>
-			<td><select name="vile2" id="vile2" onchange="controlla()">
-<?
-			$mysql="SELECT * FROM discipline_main WHERE vili=1";
-			$result=mysql_query($mysql);
-			while ($res=mysql_fetch_array($result) ) {
-?>
-			<option value="<?=$res['iddisciplina']?>" label="<?=$res['nomedisc']?>"><?=$res['nomedisc']?></option>
-<?
-			}
-?>
+    <tr>
+			<td colspan="6"><div align="center" ><hr> Passo 4 - Equipaggiamento potenziato, Elisir, Reliquie <hr></div></td>
+    </tr>
+    <tr>
+    	<td colspan="6">&nbsp;</td>
+    </tr>
 
-				</select></td>
-			<td>Disciplina3</td>
-			<td><select name="vile3" id="vile3" onchange="controlla()">
-<?
-			$mysql="SELECT * FROM discipline_main WHERE vili=1";
-			$result=mysql_query($mysql);
-			while ($res=mysql_fetch_array($result) ) {
-?>
-			<option value="<?=$res['iddisciplina']?>" label="<?=$res['nomedisc']?>"><?=$res['nomedisc']?></option>
-<?
-			}
-?>
-				</select></td>
-				</tr>
-				</table>
-			</td>
-		</tr>
-		<tr>
-			<td><span id="disc1">Disc #1</span></td>
-			<td><input name="disc1val"  id="disc1val" type=number min=0 max=5 size=1 value=0 required onchange="controlla()"/></td>
-			<td><span id="disc2">Disc #2</span></td>
-			<td><input name="disc2val"  id="disc2val" type=number min=0 max=5 size=1 value=0 required onchange="controlla()"/></td>
-			<td><span id="disc3">Disc #3</span></td>
-			<td><input name="disc3val"  id="disc3val" type=number min=0 max=5 size=1 value=0 required onchange="controlla()"/></td>
-		</tr>
-		<tr>
-      		<td colspan="6">&nbsp;</td>
-    	</tr>
-		<tr>
-      		<td colspan="6" align="center">Punti da distribuire: <span id="totdisc">5</span> / <span id="anumdisc">5</span> . Il valore massimo della singola disciplina &egrave; <span id="amaxsdisc">3</span></td>
-    	</tr>
-    	<tr>
-      		<td colspan="6" align="center"><span id="adisc">&nbsp;</span></td>
-    	</tr>
-	</table>
-		<!---------
-			TREMERE
-			--------->
-	<table width="65%" border="0" align="center" cellpadding="1" cellspacing="1" id="tabellatremere" style="display: none;">
-  		<tr>
-      		<td colspan="6">&nbsp;</td>
-		</tr>
-    	<tr>
-			<td colspan="6"><div align="center" ><hr> Dettagli taumaturgie<hr></div></td>
-    	</tr>
-    	<tr>
-      		<td colspan="6">&nbsp;</td>
-    	</tr>
-		<tr>
-			<td>Via primaria</td>
-			<td>
-				<select name="Taumaturgia1" id="Taumaturgia1" onchange="controlla()">
-        		<option value=''></option>
-<?
-$MySql = "SELECT * FROM taumaturgie_main ";
-$Results = mysql_query($MySql);
-while ( $Res = mysql_fetch_array($Results))  {
-	?> <option value='<?=$Res['idtaum']?>'><?=$Res['nometaum']?></option>   <?
-}
+		<table width="65%" border="0" align="center" cellpadding="1" cellspacing="1" id="tabella1" style="display: xnone;">
 
+				<?
+				 	$MySql = "SELECT * FROM HUNdiscipline WHERE idcospiracy = 1 and minlvl < 3 ";
+					$Results = mysql_query($MySql);
+					while ( $Res = mysql_fetch_array($Results))  {
+						if ($Res['minlvl']==$Res['maxlvl']) {
 ?>
-				</select>
-			</td>
-			<td><input name="valtaum1" id="valtaum1" type=number min=0 max=5 size=1 value=0 required onchange="controlla()"> </td>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-		</tr>
-		<tr>
-			<td>Secondaria</td>
-			<td>
-				<select name="Taumaturgia2" id="Taumaturgia2" onchange="controlla()">
-        		<option value=''></option>
+						<tr>
+							<td><input type='checkbox' name="D1<?=$Res['iddisciplina']?>" value="<?=$Res['minlvl']?>" onchange="controlla()"></td>
+							<td><?=$Res['nomedisc']?></td>
+							<td><?=$Res['minlvl']?></td>
+						</tr>
 <?
-$MySql = "SELECT * FROM taumaturgie_main ";
-$Results = mysql_query($MySql);
-while ( $Res = mysql_fetch_array($Results))  {
-	?> <option value='<?=$Res['idtaum']?>' ><?=$Res['nometaum']?></option>   <?
-}
+						} else {
+							for ( $i = $Res['minlvl'] ; $i < 3 ; $i ++) {
+								?>
+														<tr>
+															<td><input type='radio' name="D1<?=$Res['iddisciplina']?>" value="<?=$i?>" onchange="controlla()"></td>
+															<td><?=$Res['nomedisc']?></td>
+															<td><?=$i?></td>
+														</tr>
+								<?
+							}
+							?>
+						<script>
+							var myRadios = document.getElementsByName('D1<?=$Res['iddisciplina']?>');
+							var setCheck;
+							var x = 0;
+							for(x = 0; x < myRadios.length; x++){
+    						myRadios[x].onclick = function(){
+					        if(setCheck != this){
+					             setCheck = this;
+					        }else{
+					            this.checked = false;
+					            setCheck = null;
+											controlla();
+					    		}
+					    	};
+							}
+						</script>
+							<?
+						}
+					}
+				?>
 
-?>
-				</select>
-			</td>
-			<td><input  name="valtaum2" id="valtaum2" type=number min=0 max=5 size=1 value=0 required onchange="controlla()"> </td>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-		</tr>
-		<tr>
-			<td>Terziaria</td>
-			<td>
-				<select name="Taumaturgia3" id="Taumaturgia3" onchange="controlla()">
-        		<option value=''></option>
-<?
-$MySql = "SELECT * FROM taumaturgie_main ";
-$Results = mysql_query($MySql);
-while ( $Res = mysql_fetch_array($Results))  {
-	?> <option value='<?=$Res['idtaum']?>'><?=$Res['nometaum']?></option>   <?
-}
+		</table>
 
-?>
-				</select>
-			</td>
-			<td><input  name="valtaum3" id="valtaum3" type=number min=0 max=5 size=1 value=0 required onchange="controlla()"> </td>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-		</tr>
+
+
 		<tr>
-      <td colspan="6" align="center"><span id="adisc2">&nbsp;</span></td>
+    	<td colspan="6">&nbsp;</td>
+    </tr>
+		<tr>
+    	<td colspan="6" ><div align="center" >Scegli un potere di Livello.1 e uno di Livello.2 OPPURE due poteri di Livello.1</div></td>
+    </tr>
+    <tr>
+    	<td colspan="6" ><div align="center" ><span id="adisc">&nbsp;</span></div></td>
     </tr>
 	</table>
-		<!---------
-			Giovanni
-		-------->
-	<table width="65%" border="0" align="center" cellpadding="1" cellspacing="1" id="tabellagiovanni" style="display: none;">
-		<tr>
-      		<td colspan="6">&nbsp;</td>
-		</tr>
-    	<tr>
-			<td colspan="6"><div align="center" ><hr> Dettagli negromanzie<hr></div></td>
-    	</tr>
-    	<tr>
-      		<td colspan="6">&nbsp;</td>
-    	</tr>
-		<tr>
-			<td>Via primaria</td>
-			<td>
-				<select name="Necromanzia1" id="Necromanzia1" onchange="controlla()">
-        		<option value=''></option>
-<?
-$MySql = "SELECT * FROM necromanzie_main ";
-$Results = mysql_query($MySql);
-while ( $Res = mysql_fetch_array($Results))  {
-	?> <option value='<?=$Res['idnecro']?>'><?=$Res['nomenecro']?></option>   <?
-}
 
-?>
-				</select>
-			</td>
-			<td><input name="valnecro1" id="valnecro1" type=number min=0 max=5 size=1 value=0 required onchange="controlla()"> </td>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-		</tr>
-		<tr>
-			<td>Secondaria</td>
-			<td>
-				<select name="Necromanzia2" id="Necromanzia2" onchange="controlla()">
-        		<option value=''></option>
-<?
-$MySql = "SELECT * FROM necromanzie_main ";
-$Results = mysql_query($MySql);
-while ( $Res = mysql_fetch_array($Results))  {
-	?> <option value='<?=$Res['idnecro']?>'><?=$Res['nomenecro']?></option>   <?
-}
 
-?>
-				</select>
-			</td>
-			<td><input name="valnecro2" id="valnecro2" type=number min=0 max=5 size=1 value=0 required onchange="controlla()"> </td>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-		</tr>
-		<tr>
-			<td>Terziaria</td>
-			<td>
-				<select name="Necromanzia3" id="Necromanzia3" onchange="controlla()">
-        		<option value=''></option>
-<?
-$MySql = "SELECT * FROM necromanzie_main ";
-$Results = mysql_query($MySql);
-while ( $Res = mysql_fetch_array($Results))  {
-	?> <option value='<?=$Res['idnecro']?>'><?=$Res['nomenecro']?></option>   <?
-}
-
-?>
-				</select>
-			</td>
-			<td><input name="valnecro3" id="valnecro3" type=number min=0 max=5 size=1 value=0 required onchange="controlla()"> </td>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-		</tr>
-		<tr>
-      		<td colspan="6" align="center"><span id="adisc3">&nbsp;</span></td>
-    	</tr>
-	</table>
 		<!---------
 			TABLE ATTITUDINI
 		---------->
