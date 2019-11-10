@@ -117,8 +117,19 @@
 
 
 
+	$Mysql="select count(*) as a from HUNTERpersonaggio where idutente=$idutente";
+	$Res=mysql_fetch_array(mysql_query($Mysql));
+
+	$numschedaH=$Res['a'];
+
+
 	session_write_close();
-	header("Location: ../bg.php", true);
+
+	if ($numschedaH == 1 ) {
+		header("Location: ../bgH.php", true);
+	} else {
+		header("Location: ../bg.php", true);
+	}
 
 
 ?>

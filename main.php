@@ -532,7 +532,11 @@
 				<a href="rubrica.php" class="w3-btn w3-white w3-ripple w3-left-align" style="width:350px;"><img src="img/contacts.png" height="50" width="50" style="vertical-align:middle"> Visualizza/gestisci Rubrica</a>
 			</td>
 			<td class="tdc">
+				<? if ($numscheda == 1) { ?>
 				<a href="bg.php" class="w3-btn w3-white w3-ripple w3-left-align" style="width:350px;"><img src="img/master.png" height="50" width="50" style="vertical-align:middle"> Modifica Fama , Background ecc..</a>
+				<? } else { ?>
+				<a href="bgH.php" class="w3-btn w3-white w3-ripple w3-left-align" style="width:350px;"><img src="img/master.png" height="50" width="50" style="vertical-align:middle"> Modifica Fama , Background ecc..</a>					
+				<? } ?>
 			</td>
 		</tr>
 		<tr>

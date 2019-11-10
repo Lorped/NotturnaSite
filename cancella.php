@@ -111,6 +111,10 @@
 		$Mysql = "DELETE FROM contatti WHERE idutente = $idutente";
 	 	mysql_query($Mysql);
 		if (mysql_errno()) die ( mysql_errno().": ".mysql_error() );
+
+		$Mysql = "DELETE FROM rubrica WHERE owner = $idutente";
+	 	mysql_query($Mysql);
+		if (mysql_errno()) die ( mysql_errno().": ".mysql_error() );
 	}
 
   session_write_close();

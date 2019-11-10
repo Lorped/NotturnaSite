@@ -557,6 +557,8 @@ for ( $i = $prontezza ; $i < 5; $i++) echo "<img src='img/blank.gif' width='10' 
 
 			for ( $i=0; $i < floor($num_rows/3) ; $i++) {
 				$res = mysql_fetch_array($Results);
+				if ($res['nomeback'] == "Rifugio") $res['nomeback']="SafeHouse";
+				if ($res['nomeback'] == "Seguaci") $res['nomeback']="Collaboratori";
 ?>
 		<tr>
 			<td><?=$res['nomeback']?></td>
@@ -569,6 +571,8 @@ for ( $i = $prontezza ; $i < 5; $i++) echo "<img src='img/blank.gif' width='10' 
 			<td>&nbsp;</td>
 <?
 				$res = mysql_fetch_array($Results);
+				if ($res['nomeback'] == "Rifugio") $res['nomeback']="SafeHouse";
+				if ($res['nomeback'] == "Seguaci") $res['nomeback']="Collaboratori";
 ?>
 			<td><?=$res['nomeback']?></td>
 			<td class="ald" >
@@ -580,6 +584,8 @@ for ( $i = $prontezza ; $i < 5; $i++) echo "<img src='img/blank.gif' width='10' 
 			<td>&nbsp;</td>
 <?
 				$res = mysql_fetch_array($Results);
+				if ($res['nomeback'] == "Rifugio") $res['nomeback']="SafeHouse";
+				if ($res['nomeback'] == "Seguaci") $res['nomeback']="Collaboratori";
 ?>
 			<td><?=$res['nomeback']?></td>
 			<td class="ald" >

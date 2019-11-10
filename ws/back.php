@@ -5,7 +5,7 @@
 	if (!isset ($_SESSION['idutente'])) die ("Errore, nessuna sessione attiva!");
 
 	$idutente=$_SESSION['idutente'];
-    
+
 	if (!isset($_POST) ) die ( "No post!");
 
 //die (print_r($_POST));
@@ -17,11 +17,11 @@
 	$res=mysql_fetch_array($Result);
 
 	$liv=$res['livello'];
-			   
+
 	if ($liv=="") $liv=0;
-	
+
 	$newliv=$liv+$_POST['do'];
-	
+
 	if ( $newliv <0 ) $newliv=0;
 	if ( $newliv >5 ) $newliv=5;
 
@@ -31,45 +31,55 @@
 	$nome=$res['nomeback'];
 
 
-		
+
 	if ( $liv==0 && $newliv==1) {
 		$Mysql = "INSERT INTO background ( idback, idutente, livello) VALUES ( $id, $idutente, 1)";
 		$Result = mysql_query($Mysql);
 		if (mysql_errno()) die ( mysql_errno().": ".mysql_error()."+". $Mysql );
-		
+
 		$azione=$nome." 1";
 		$Mysql = "INSERT INTO logpx ( idutente, px, azione) VALUES ( $idutente, 0, '$azione' )" ;
 		$Result = mysql_query($Mysql);
 		if (mysql_errno()) die ( mysql_errno().": ".mysql_error()."+". $Mysql );
-		
+
 	}
-	if ( $liv>0 && $newliv==0) {		
+	if ( $liv>0 && $newliv==0) {
 		$Mysql = "DELETE FROM background WHERE idback=$id AND  idutente=$idutente";
 		$Result = mysql_query($Mysql);
 		if (mysql_errno()) die ( mysql_errno().": ".mysql_error()."+". $Mysql );
-		
+
 		$azione=$nome." cancellato";
 		$Mysql = "INSERT INTO logpx ( idutente, px, azione) VALUES ( $idutente, 0, '$azione' )" ;
 		$Result = mysql_query($Mysql);
 		if (mysql_errno()) die ( mysql_errno().": ".mysql_error()."+". $Mysql );
 	}
-	if ( $liv!=0 && $newliv!=0) {		
+	if ( $liv!=0 && $newliv!=0) {
 		$Mysql = "UPDATE background SET livello=$newliv WHERE idback=$id AND  idutente=$idutente";
 		$Result = mysql_query($Mysql);
 		if (mysql_errno()) die ( mysql_errno().": ".mysql_error()."+". $Mysql );
-		
+
 		$azione=$nome." a ".$newliv;
 		$Mysql = "INSERT INTO logpx ( idutente, px, azione) VALUES ( $idutente, 0, '$azione' )" ;
 		$Result = mysql_query($Mysql);
 		if (mysql_errno()) die ( mysql_errno().": ".mysql_error()."+". $Mysql );
-	}			   
-			   
+	}
 
-	
+
+	$Mysql="select count(*) as a from HUNTERpersonaggio where idutente=$idutente";
+	$Res=mysql_fetch_array(mysql_query($Mysql));
+
+	$numschedaH=$Res['a'];
+
+
 	session_write_close();
-	header("Location: ../bg.php", true);
+
+	if ($numschedaH == 1 ) {
+		header("Location: ../bgH.php", true);
+	} else {
+		header("Location: ../bg.php", true);
+	}
+
 
 
 
 ?>
-

@@ -25,6 +25,7 @@
 	$nome=$res['nomepg'];
 
 	$clan=$res['nomecospiracy'];
+	$idclan=$res['idclan'];
 	$idstatus=$res['idstatus'];
 
 
@@ -64,7 +65,13 @@
 		$status = $res['lvl3'];
 	}
 
-
+	if ( $idclan == 1 ) {
+		$textdisc = "Equip. Potenziato";
+	} elseif ($idclan == 2) {
+		$textdisc = "Elisir";
+	} elseif ($idclan == 3) {
+		$textdisc = "Reliquie";
+	}
 
 
 
@@ -395,7 +402,7 @@
 			font-family: 'Libre Baskerville';
 			text-align:left;
 			font-size:10px;
-			width:100%;
+			width:95%;
 			line-height:15px;
 			display:inline-block;
 		}
@@ -479,7 +486,7 @@
 	<div class="list-align" style="display: block;" >
     	<div class="list"><img src="img/index.png" class="bg-image" id="pg1">
 			<div class="list-inner">
-				<div class="main-header">HUNTERS</div>
+				<div class="main-header">HUNTER</div>
 				<div class="props">
         			<div class="prop" style="width:8%">Nome:</div>
           			<div class="prop_value" style="width:32%"><?=$nome?></div>
@@ -638,18 +645,17 @@ for ( $i = $prontezza ; $i < 5; $i++) echo "A";
 				</div>  	<!-- Fine attitudini -->
 				<!-- discipline header -->
 				<div class="header-sub-placeholder"><img src="img/bar.png" class="header-sub-img">
-					<div class="header-sub-bg"><img src="img/pixel.gif" width="150px"></div>
-					<div class="header-sub"><span>Discipline</span></div>
+					<div class="header-sub-bg"><img src="img/pixel.gif" width="<?=$idclan!=1?'150px':'250px'?>"></div>
+					<div class="header-sub"><span><?=$textdisc?></span></div>
 				</div>
-            	<div class="prop-header-nobg2"><span>Discipline</span></div>
-            	<div class="prop-header-nobg2"><span>Vie Taumaturgiche / Necromant.</span></div>
+
 				<div class="advantages">
 					<div class="discipline">
 <?
-	$MySql = "SELECT  nomedisc ,livello  FROM discipline
-    	LEFT JOIN discipline_main ON discipline_main.iddisciplina=discipline.iddisciplina
-        WHERE idutente = $idutente
-        ORDER BY  discipline.iddisciplina";
+	$MySql = "SELECT  nomedisc ,livello, HUNdiscipline.iddisciplina, maxlvl  FROM HUNdiscipline
+					LEFT JOIN HUNdiscipline_main ON HUNdiscipline_main.iddisciplina=HUNdiscipline.iddisciplina
+					WHERE idutente = $idutente
+					ORDER BY maxlvl ASC";
 	$Results = mysql_query($MySql);
 	while ( $res=mysql_fetch_array($Results)) {
 		$liv=$res['livello'];
@@ -658,7 +664,7 @@ for ( $i = $prontezza ; $i < 5; $i++) echo "A";
 						<div class="disc_value">
 <?
 		for ( $i = 0 ; $i < $liv; $i++) echo "B";
-		for ( $i = $liv ; $i < 5; $i++) echo "A";
+		for ( $i = $liv ; $i < $res['maxlvl']; $i++) echo "A";
 ?>
 						</div>
 <?
@@ -673,39 +679,9 @@ for ( $i = $prontezza ; $i < 5; $i++) echo "A";
 					</div>
 					<div class="vie">
 <?
-	$MySql = "SELECT  nometaum, livello  FROM taumaturgie
-    	LEFT JOIN taumaturgie_main ON taumaturgie_main.idtaum=taumaturgie.idtaum
-    	WHERE idutente = $idutente ORDER BY livello DESC ";
-	$Results = mysql_query($MySql);
-	while ( $res=mysql_fetch_array($Results)) {
-		$liv=$res['livello'];
-?>
-						<div class="disc_name" ><?=$res['nometaum']?></div>
-						<div class="disc_value">
-<?
-		for ( $i = 0 ; $i < $liv; $i++) echo "B";
-		for ( $i = $liv ; $i < 5; $i++) echo "A";
-?>
-						</div>
-<?
-	}
-	$MySql = "SELECT  nomenecro, livello  FROM necromanzie
-    	LEFT JOIN necromanzie_main ON necromanzie_main.idnecro=necromanzie.idnecro
-    	WHERE idutente = $idutente ORDER BY livello DESC";
-	$Results2 = mysql_query($MySql);
-	while ( $res=mysql_fetch_array($Results2)) {
-		$liv=$res['livello'];
-?>
-						<div class="disc_name" ><?=$res['nomenecro']?></div>
-						<div class="disc_value">
-<?
-		for ( $i = 0 ; $i < $liv; $i++) echo "B";
-		for ( $i = $liv ; $i < 5; $i++) echo "A";
-?>
-						</div>
-<?
-	}
-	for (  $i=mysql_num_rows($Results)+mysql_num_rows($Results2) ; $i< 5 ; $i++ ) {
+
+
+	for (  $i=0 ; $i< 5 ; $i++ ) {
 ?>
 						<div class="disc_name vab" ><hr></div>
 						<div class="disc_value">AAAAA</div>
@@ -742,36 +718,16 @@ for ( $i = $prontezza ; $i < 5; $i++) echo "A";
 						</div>
 <?
 	}
-?>
-					</div>
-					<div class="prop-header-placeholder"><img src="img/bar2.png" class="prop-header-img">
-						<div class="prop-header-bg"><img src="img/pixel.gif" width="130px"></div>
-						<div class="prop-header"><span>Contatti</span></div>
-					</div>
-					<div class="background">
-<?
-	$MySql = "SELECT * FROM contatti WHERE idutente=$idutente ORDER BY livello DESC";
-	$Result=mysql_query($MySql);
-	while ($res=mysql_fetch_array($Result)) {
-		$liv=$res['livello'];
-?>
-						<div class="bg_name" ><?=$res['nomecontatto']?></div>
-						<div class="bg_value">
-<?
-		for ( $i = 0 ; $i < $liv; $i++) echo "B";
-		for ( $i = $liv ; $i < 5; $i++) echo "A";
-?>
-						</div>
-<?
-	}
-	for (  $i=mysql_num_rows($Result) ; $i< 6 ; $i++ ) {
-?>
-						<div class="bg_name vab" style="width=60%;" ><hr></div>
-						<div class="bg_value">AAAAA</div>
-<?
+	for (  $i=0 ; $i< 2 ; $i++ ) {
+	?>
+		<div class="bg_name vab" style="width=60%;" ><hr></div>
+		<div class="bg_value">AAAAA</div>
+	<?
 	}
 ?>
 					</div>
+
+
 				</div>
 
 
@@ -803,7 +759,30 @@ for ( $i = $prontezza ; $i < 5; $i++) echo "A";
 
 					</div>
 					<!-- PS header-->
+					<div class="prop-header-placeholder" style="margin-top: 20px;"><img src="img/bar2.png" class="prop-header-img" >
+						<div class="prop-header-bg"><img src="img/pixel.gif" width="130px"></div>
+						<div class="prop-header"><span>Pregi/Difetti</span></div>
+					</div>
+					<div class="rituali" >
+<?
+	$MySql = "SELECT  * FROM pregidifetti
+    	LEFT JOIN pregidifetti_main ON pregidifetti_main.idpregio=pregidifetti.idpregio
+        WHERE idutente = '$idutente' ORDER BY valore ASC";
+	$Results = mysql_query($MySql);
+	while ($res=mysql_fetch_array($Results)) {
+		$liv=$res['livello'];
+?>
+						<div class="rituali_name">&nbsp;<?=$res['nomepregio']?></div>
+<?
+	}
+	for (  $i=mysql_num_rows($Results) ; $i< 4 ; $i++ ) {
+?>
+						<div class="rituali_name_empty">&nbsp;<hr></div>
+<?
+	}
 
+?>
+					</div>
 					<!-- fama header-->
 
 					<!-- fama -->
@@ -834,7 +813,7 @@ for ( $i = $prontezza ; $i < 5; $i++) echo "A";
 						</div>
 					<?
 					}
-					for (  $i=mysql_num_rows($Result) ; $i< 6 ; $i++ ) {
+					for (  $i=mysql_num_rows($Result) ; $i< 8 ; $i++ ) {
 					?>
 						<div class="bg_name vab" style="width=60%;" ><hr></div>
 						<div class="bg_value">AAAAA</div>
@@ -847,29 +826,8 @@ for ( $i = $prontezza ; $i < 5; $i++) echo "A";
 
 <!-- -->
 
-					<div class="prop-header-placeholder"><img src="img/bar2.png" class="prop-header-img">
-						<div class="prop-header-bg"><img src="img/pixel.gif" width="130px"></div>
-						<div class="prop-header"><span>Pregi/Difetti</span></div>
-					</div>
-					<div class="rituali" >
-<?
-	$MySql = "SELECT  * FROM pregidifetti
-    	LEFT JOIN pregidifetti_main ON pregidifetti_main.idpregio=pregidifetti.idpregio
-        WHERE idutente = '$idutente' ORDER BY valore ASC";
-	$Results = mysql_query($MySql);
-	while ($res=mysql_fetch_array($Results)) {
-		$liv=$res['livello'];
-?>
-						<div class="rituali_name">&nbsp;<?=$res['nomepregio']?></div>
-<?
-	}
-	for (  $i=mysql_num_rows($Results) ; $i< 7 ; $i++ ) {
-?>
-						<div class="rituali_name_empty">&nbsp;<hr></div>
-<?
-	}
-?>
-					</div>
+
+
 				</div>
 			</div> <!-- Fine LIST INNER -->
 		</div>			<!-- Fine LIST  -->
@@ -981,6 +939,9 @@ for ( $i = $prontezza ; $i < 5; $i++) echo "A";
 						<div class="prop3">Rissa</div>
 						<div class="prop3" style="font-style:bold"><?=ceil(($forza+$rissa)/2)?></div>
 					</div>
+
+
+
 					<div class="tabellaarmi">
 						<div class="prop3" style="text-align:left;">Pugnale/Paletto </div>
 						<div class="prop3">(Fo+ATT)/2+1</div>
