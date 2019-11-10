@@ -24,7 +24,7 @@
 	$nomeplayer=$res['nomeplayer'];
 
 	$clan=$res['nomecospiracy'];
-
+	$idstatus=$res['idstatus'];
 
 
 	$forza=$res['forza'];
@@ -51,23 +51,28 @@
 	$xp=$res['xp'];
 	$xpspesi=$res['xpspesi'];
 
-
-
 	//
 	$rifugio = $res['rifugio'];
 	$zona = $res['zona'];
-	// PF
-	$Mysql="SELECT * from discipline where iddisciplina=12 and idutente=$idutente";
-	$Result=mysql_query($Mysql);
-	if ( $res=mysql_fetch_array($Result)) {
-		$robustezza=$res['livello'];
+
+
+	if ( $idstatus == 1 ) {
+		$status = $res['lvl1'];
+	} elseif ($idstatus == 2) {
+		$status = $res['lvl2'];
+	} elseif ($idstatus == 3) {
+		$status = $res['lvl3'];
 	}
+
+
+	// PF
+
 	$Mysql="SELECT * from skill where idskill=28 and idutente=$idutente";
-	$Result=mysql_query($Mysql);
+	$Result = mysql_query($Mysql);
 	if ( $res=mysql_fetch_array($Result)) {
 		$schivare=$res['livello'];
 	}
-	$pf = (3+$attutimento)*2 + $robustezza + $schivare ;
+	$pf = (3+$attutimento)*2 +  $schivare ;
 
 
 	// ferita permanente -3 PF
@@ -168,33 +173,26 @@
 			<td>Player</td>
 			<td><?=$nomeplayer?></td>
 			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-			<td class="ald">&nbsp;</td>
-		</tr>
-		<tr>
-			<td>Status</td>
-			<td><?=$status?> </td>
-			<td>Cospiracy</td>
-			<td><?=$clan?></td>
-			<td>&nbsp;</td>
 			<td>Forza di volontà</td>
 			<td class="ald"><?=$fdv?>/<?=$fdvmax?></td>
 		</tr>
 		<tr>
-			<td colspan=2>&nbsp; </td>
-			<td colspan=3>&nbsp; </td>
+			<td>Cospiracy</td>
+			<td><?=$clan?></td>
+			<td>Status</td>
+			<td><?=$status?> </td>
+			<td>&nbsp;</td>
 			<td>Res. Dominazione</td>
 			<td class="ald"><?= floor(($intelligenza+$prontezza+$percezione+$carisma+$fdv)/5)?></td>
 		</tr>
 		<tr>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
 			<td>XP</td>
-			<td><?=$xp." (spesi ".$xpspesi.")"?></td>
+			<td ><?=$xp." (spesi ".$xpspesi.")"?></td>
+			<td colspan=3>&nbsp; </td>
 			<td>&nbsp;</td>
 			<td>&nbsp;</td>
-			<td class="ald">&nbsp;</td>
 		</tr>
+
 		<tr>
 			<td>SafeHouse</td>
 			<td><?=$rifugio?></td>
@@ -215,28 +213,7 @@
 		</tr>
 -->
 	</table>
-	<table>
-		<tr>
-			<td width="150">Fama in Città</td>
-			<td width="100" class="ald"><?
-for ( $i = 0 ; $i < $fama1; $i++) echo "<img src='img/dot.gif' width='10' height='10' >";
-for ( $i = $fama1 ; $i < 5; $i++) echo "<img src='img/blank.gif' width='10' height='10' >";
-?></td>
-			<td width="25">&nbsp;</td>
-			<td width=150>Fama tra i Vampiri</td>
-			<td width="100" class="ald"><?
-for ( $i = 0 ; $i < $fama2; $i++) echo "<img src='img/dot.gif' width='10' height='10' >";
-for ( $i = $fama2 ; $i < 5; $i++) echo "<img src='img/blank.gif' width='10' height='10' >";
-?></td>
-			<td width="25">&nbsp;</td>
-			<td width=190>Fama nel Mondo Oscuro</td>
-			<td width="60" class="ald"><?
-for ( $i = 0 ; $i < $fama3; $i++) echo "<img src='img/dot.gif' width='10' height='10' >";
-for ( $i = $fama3 ; $i < 5; $i++) echo "<img src='img/blank.gif' width='10' height='10' >";
-?></td>
-		</tr>
 
-	</table>
 	</div>
 	<div align="center">
 	<table>
@@ -334,16 +311,16 @@ for ( $i = $prontezza ; $i < 5; $i++) echo "<img src='img/blank.gif' width='10' 
 			<td width="60">&nbsp;</td>
 		</tr>
 		<tr>
-			<td colspan=8 class="alc title2"><hr>Discipline<hr></td>
+			<td colspan=8 class="alc title2"><hr>Equipaggiamento potenziato, Elisir, Reliquie<hr></td>
 		</tr>
 
 
 		<? ///DISCIPLINE
 
-			$MySql = "SELECT  nomedisc ,livello, discipline.iddisciplina  FROM discipline
-          		LEFT JOIN discipline_main ON discipline_main.iddisciplina=discipline.iddisciplina
+			$MySql = "SELECT  nomedisc ,livello, HUNdiscipline.iddisciplina, maxlvl  FROM HUNdiscipline
+          		LEFT JOIN HUNdiscipline_main ON HUNdiscipline_main.iddisciplina=HUNdiscipline.iddisciplina
           		WHERE idutente = $idutente
-          		ORDER BY discipline.iddisciplina";
+          		ORDER BY HUNdiscipline.iddisciplina";
 			$Results = mysql_query($MySql);
 			if (mysql_errno())  die ( mysql_errno().": ".mysql_error() );
 			$num_rows = mysql_num_rows($Results);
@@ -353,17 +330,12 @@ for ( $i = $prontezza ; $i < 5; $i++) echo "<img src='img/blank.gif' width='10' 
 ?>
 		<tr>
 			<td class="vat"><?=$res['nomedisc']?>
-			<?	$idd=$res['iddisciplina'];
-				$Mysql2="SELECT * from poteri LEFT join poteri_main on poteri.idpotere=poteri_main.idpotere where poteri_main.iddisciplina=$idd and idutente=$idutente";
-				$Results2 = mysql_query($Mysql2);
-				while ($res2=mysql_fetch_array($Results2)) {
-					echo "<br>".$res2['livellopot']." - ".$res2['nomepotere'];
-				} ?>
+
 			</td>
 			<td class="ald vat" >
 <?
 				for ( $j = 0 ; $j < $res['livello']; $j++) echo "<img src='img/dot.gif' width='10' height='10' >";
-				for ( $j = $res['livello'] ; $j < 5; $j++) echo "<img src='img/blank.gif' width='10' height='10' >";
+				for ( $j = $res['livello'] ; $j < $res['maxlvl']; $j++) echo "<img src='img/blank.gif' width='10' height='10' >";
 
 ?>
 			</td>
@@ -372,17 +344,12 @@ for ( $i = $prontezza ; $i < 5; $i++) echo "<img src='img/blank.gif' width='10' 
 				$res = mysql_fetch_array($Results);
 ?>
 			<td class="vat"><?=$res['nomedisc']?>
-				<?	$idd=$res['iddisciplina'];
-					$Mysql2="SELECT * from poteri LEFT join poteri_main on poteri.idpotere=poteri_main.idpotere where poteri_main.iddisciplina=$idd and idutente=$idutente";
-					$Results2 = mysql_query($Mysql2);
-					while ($res2=mysql_fetch_array($Results2)) {
-						echo "<br>".$res2['livellopot']." - ".$res2['nomepotere'];
-					} ?>
+
 			</td>
 			<td class="ald vat" >
 <?
 			for ( $j = 0 ; $j < $res['livello']; $j++) echo "<img src='img/dot.gif' width='10' height='10' >";
-			for ( $j = $res['livello'] ; $j < 5; $j++) echo "<img src='img/blank.gif' width='10' height='10' >";
+			for ( $j = $res['livello'] ; $j < $res['maxlvl']; $j++) echo "<img src='img/blank.gif' width='10' height='10' >";
 ?>
 			</td>
 			<td>&nbsp;</td>
@@ -390,17 +357,12 @@ for ( $i = $prontezza ; $i < 5; $i++) echo "<img src='img/blank.gif' width='10' 
 				$res = mysql_fetch_array($Results);
 ?>
 			<td class="vat"><?=$res['nomedisc']?>
-				<?	$idd=$res['iddisciplina'];
-					$Mysql2="SELECT * from poteri LEFT join poteri_main on poteri.idpotere=poteri_main.idpotere where poteri_main.iddisciplina=$idd and idutente=$idutente";
-					$Results2 = mysql_query($Mysql2);
-					while ($res2=mysql_fetch_array($Results2)) {
-						echo "<br>".$res2['livellopot']." - ".$res2['nomepotere'];
-					} ?>
+
 			</td>
 			<td class="ald vat" >
 <?
 				for ( $j = 0 ; $j < $res['livello']; $j++) echo "<img src='img/dot.gif' width='10' height='10' >";
-				for ( $j = $res['livello'] ; $j < 5; $j++) echo "<img src='img/blank.gif' width='10' height='10' >";
+				for ( $j = $res['livello'] ; $j <  $res['maxlvl']; $j++) echo "<img src='img/blank.gif' width='10' height='10' >";
 ?>
 			</td>
 		</tr>
@@ -414,17 +376,12 @@ for ( $i = $prontezza ; $i < 5; $i++) echo "<img src='img/blank.gif' width='10' 
 				$res = mysql_fetch_array($Results);
 ?>
 			<td class="vat"><?=$res['nomedisc']?>
-				<?	$idd=$res['iddisciplina'];
-					$Mysql2="SELECT * from poteri LEFT join poteri_main on poteri.idpotere=poteri_main.idpotere where poteri_main.iddisciplina=$idd and idutente=$idutente";
-					$Results2 = mysql_query($Mysql2);
-					while ($res2=mysql_fetch_array($Results2)) {
-						echo "<br>".$res2['livellopot']." - ".$res2['nomepotere'];
-					} ?>
+
 			</td>
 			<td class="ald vat">
 <?
 				for ( $j = 0 ; $j < $res['livello']; $j++) echo "<img src='img/dot.gif' width='10' height='10' >";
-				for ( $j = $res['livello'] ; $j < 5; $j++) echo "<img src='img/blank.gif' width='10' height='10' >";
+				for ( $j = $res['livello'] ; $j <  $res['maxlvl']; $j++) echo "<img src='img/blank.gif' width='10' height='10' >";
 ?>
 			</td>
 			<td>&nbsp;</td>
@@ -438,346 +395,12 @@ for ( $i = $prontezza ; $i < 5; $i++) echo "<img src='img/blank.gif' width='10' 
 			}
 ?>
 		</tr>
-<? //FINE DISCIPLINE
 
-  //TAUMATURGIE
-	   		$MySql = "SELECT  nometaum, livello,tipologia  FROM taumaturgie
-          		LEFT JOIN taumaturgie_main ON taumaturgie_main.idtaum=taumaturgie.idtaum
-          		WHERE idutente = $idutente ";
-
-			$Results = mysql_query($MySql);
-			if (mysql_errno()) die ( mysql_errno().": ".mysql_error() );
-
-			$num_rows = mysql_num_rows($Results);
-
-			if ( $num_rows > 0 ) {
-?>
-<!--		<tr>
-			<td colspan=8>&nbsp;</td>
-		</tr> -->
-		<tr>
-			<td colspan=8 class="alc title2">Vie Taumaturgiche<hr></td>
-		</tr>
-<?
-			for ( $i=0; $i < floor($num_rows/3) ; $i++) {
-				$res = mysql_fetch_array($Results);
-?>
-		<tr>
-			<td><?=$res['nometaum']?></td>
-			<td class="ald" >
-<?
-				for ( $j = 0 ; $j < $res['livello']; $j++) echo "<img src='img/dot.gif' width='10' height='10' >";
-				for ( $j = $res['livello'] ; $j < 5; $j++) echo "<img src='img/blank.gif' width='10' height='10' >";
-?>
-			</td>
-			<td>&nbsp;</td>
-<?
-				$res = mysql_fetch_array($Results);
-?>
-			<td ><?=$res['nometaum']?></td>
-			<td class="ald" >
-<?
-				for ( $j = 0 ; $j < $res['livello']; $j++) echo "<img src='img/dot.gif' width='10' height='10' >";
-				for ( $j = $res['livello'] ; $j < 5; $j++) echo "<img src='img/blank.gif' width='10' height='10' >";
-?>
-			</td>
-			<td>&nbsp;</td>
-<?
-				$res = mysql_fetch_array($Results);
-?>
-			<td><?=$res['nometaum']?></td>
-			<td class="ald" >
-<?
-				for ( $j = 0 ; $j < $res['livello']; $j++) echo "<img src='img/dot.gif' width='10' height='10' >";
-				for ( $j = $res['livello'] ; $j < 5; $j++) echo "<img src='img/blank.gif' width='10' height='10' >";
-?>
-			</td>
-		</tr>
-<?
-			}
-?>
-		<tr>
-<?
-			$r=0;
-			for ( $k=0; $k < $num_rows-$i*3 ; $k++) {
-				$res = mysql_fetch_array($Results);
-?>
-			<td><?=$res['nometaum']?></td>
-			<td class="ald">
-<?
-				for ( $j = 0 ; $j < $res['livello']; $j++) echo "<img src='img/dot.gif' width='10' height='10' >";
-				for ( $j = $res['livello'] ; $j < 5; $j++) echo "<img src='img/blank.gif' width='10' height='10' >";
-?>
-			</td>
-			<td>&nbsp;</td>
-<?
-				$r=$r+3;
-			}
-			for ( ; $r < 9 ; $r++) {
-?>
-			<td>&nbsp;</td>
-<?
-			}
-?>
-		</tr>
-<?
-	}
-//FINE TAUMATURGIE
-  //Necromanzie
-	   		$MySql = "SELECT  nomenecro, livello,tipologia  FROM necromanzie
-          		LEFT JOIN necromanzie_main ON necromanzie_main.idnecro=necromanzie.idnecro
-          		WHERE idutente = $idutente ";
-
-			$Results = mysql_query($MySql);
-			if (mysql_errno()) die ( mysql_errno().": ".mysql_error() );
-
-			$num_rows = mysql_num_rows($Results);
-
-			if ( $num_rows > 0 ) {
-?>
-<!--		<tr>
-			<td colspan=8>&nbsp;</td>
-		</tr> -->
-		<tr>
-			<td colspan='8' class="alc title2">Vie Necromantiche<hr></td>
-		</tr>
-<?
-			for ( $i=0; $i < floor($num_rows/3) ; $i++) {
-				$res = mysql_fetch_array($Results);
-?>
-		<tr>
-			<td><?=$res['nomenecro']?></td>
-			<td class="ald" >
-<?
-				for ( $j = 0 ; $j < $res['livello']; $j++) echo "<img src='img/dot.gif' width='10' height='10' >";
-				for ( $j = $res['livello'] ; $j < 5; $j++) echo "<img src='img/blank.gif' width='10' height='10' >";
-?>
-			</td>
-			<td>&nbsp;</td>
-<?
-				$res = mysql_fetch_array($Results);
-?>
-			<td><?=$res['nomenecro']?></td>
-			<td class="ald" >
-<?
-				for ( $j = 0 ; $j < $res['livello']; $j++) echo "<img src='img/dot.gif' width='10' height='10' >";
-				for ( $j = $res['livello'] ; $j < 5; $j++) echo "<img src='img/blank.gif' width='10' height='10' >";
-?>
-			</td>
-			<td>&nbsp;</td>
-<?
-				$res = mysql_fetch_array($Results);
-?>
-			<td ><?=$res['nomenecro']?></td>
-			<td class="ald" >
-<?
-				for ( $j = 0 ; $j < $res['livello']; $j++) echo "<img src='img/dot.gif' width='10' height='10' >";
-				for ( $j = $res['livello'] ; $j < 5; $j++) echo "<img src='img/blank.gif' width='10' height='10' >";
-?>
-			</td>
-		</tr>
-<?
-			}
-?>
-		<tr>
-<?
-			$r=0;
-			for ( $k=0; $k < $num_rows-$i*3 ; $k++) {
-				$res = mysql_fetch_array($Results);
-?>
-			<td ><?=$res['nomenecro']?></td>
-			<td class="ald" >
-<?
-				for ( $j = 0 ; $j < $res['livello']; $j++) echo "<img src='img/dot.gif' width='10' height='10' >";
-				for ( $j = $res['livello'] ; $j < 5; $j++) echo "<img src='img/blank.gif' width='10' height='10' >";
-?>
-			</td>
-			<td>&nbsp;</td>
-<?
-			$r=$r+3;
-			}
-			for ( ; $r < 9 ; $r++) {
-?>
-			<td>&nbsp;</td>
-<?
-			}
-?>
-		</tr>
-<?
-		}
-//FINE TAUMATURGIE ?>
 
 		</table>
 	</div>
 
-		<!--- RITUALI -->
 
-
-
-<?
-
-			$MySql = "SELECT  nomerituale ,livello FROM rituali_t
-      			LEFT JOIN rituali_t_main ON rituali_t_main.idrituale=rituali_t.idrituale
-          		WHERE idutente = '$idutente' ORDER BY livello ASC";
-			$Results = mysql_query($MySql);
-			if (mysql_errno())  die ( mysql_errno().": ".mysql_error() );
-			$num_rows = mysql_num_rows($Results);
-
-			if ( $num_rows > 0 ) {
-?>
-	<div align="center">
-	<table>
-		<tr>
-			<td width="246">&nbsp;</td>
-			<td width="20">&nbsp;</td>
-			<td width="1">&nbsp;</td>
-			<td width="246">&nbsp;</td>
-			<td width="20">&nbsp;</td>
-			<td width="1">&nbsp;</td>
-			<td width="246">&nbsp;</td>
-			<td width="20">&nbsp;</td>
-		</tr>
-		<tr>
-			<td colspan=8 class="alc title2"><hr>Rituali Taumaturgici<hr></td>
-		</tr>
-<?
-
-
-			for ( $i=0; $i < floor($num_rows/3) ; $i++) {
-				$res = mysql_fetch_array($Results);
-?>
-		<tr>
-			<td><?=$res['nomerituale']?></td>
-			<td><?=$res['livello']?></td>
-			<td>&nbsp;</td>
-<?
-				$res = mysql_fetch_array($Results);
-?>
-			<td><?=$res['nomerituale']?></td>
-			<td><?=$res['livello']?></td>
-			<td>&nbsp;</td>
-<?
-				$res = mysql_fetch_array($Results);
-?>
-			<td><?=$res['nomerituale']?></td>
-			<td class="ald"><?=$res['livello']?></td>
-		</tr>
-<?
-			}
-			if (floor($num_rows/3)*3 !=$num_rows ) {
-?>
-		<tr>
-<?
-				$r=0;
-				for ( $k=0; $k < $num_rows-$i*3 ; $k++) {
-					$res = mysql_fetch_array($Results);
-?>
-			<td><?=$res['nomerituale']?></td>
-			<td><?=$res['livello']?></td>
-			<td>&nbsp;</td>
-<?
-					$r=$r+3;
-				}
-				for ( ; $r < 8 ; $r++) {
-?>
-			<td>&nbsp;</td>
-<?
-				}
-?>
-		</tr>
-<?
-			}
-?>
-		<tr>
-	</table>
-	</div>
-<?
-			}
-?>
-				<!--- RITUALI2 -->
-
-
-
-<?
-
-			$MySql = "SELECT  nomerituale ,livello FROM rituali_n
-      			LEFT JOIN rituali_n_main ON rituali_n_main.idrituale=rituali_n.idrituale
-          		WHERE idutente = '$idutente' ORDER BY livello ASC";
-			$Results = mysql_query($MySql);
-			if (mysql_errno())  die ( mysql_errno().": ".mysql_error() );
-			$num_rows = mysql_num_rows($Results);
-
-			if ( $num_rows > 0 ) {
-?>
-	<div align="center">
-	<table>
-		<tr>
-			<td width="246">&nbsp;</td>
-			<td width="20">&nbsp;</td>
-			<td width="1">&nbsp;</td>
-			<td width="246">&nbsp;</td>
-			<td width="20">&nbsp;</td>
-			<td width="1">&nbsp;</td>
-			<td width="246">&nbsp;</td>
-			<td width="20">&nbsp;</td>
-		</tr>
-		<tr>
-			<td colspan=8 class="alc title2"><hr>Rituali Necromantici<hr></td>
-		</tr>
-<?
-
-
-			for ( $i=0; $i < floor($num_rows/3) ; $i++) {
-				$res = mysql_fetch_array($Results);
-?>
-		<tr>
-			<td><?=$res['nomerituale']?></td>
-			<td><?=$res['livello']?></td>
-			<td>&nbsp;</td>
-<?
-				$res = mysql_fetch_array($Results);
-?>
-			<td><?=$res['nomerituale']?></td>
-			<td><?=$res['livello']?></td>
-			<td>&nbsp;</td>
-<?
-				$res = mysql_fetch_array($Results);
-?>
-			<td><?=$res['nomerituale']?></td>
-			<td class="ald"><?=$res['livello']?></td>
-		</tr>
-<?
-			}
-			if (floor($num_rows/3)*3 !=$num_rows ) {
-?>
-		<tr>
-<?
-				$r=0;
-				for ( $k=0; $k < $num_rows-$i*3 ; $k++) {
-					$res = mysql_fetch_array($Results);
-?>
-			<td><?=$res['nomerituale']?></td>
-			<td><?=$res['livello']?></td>
-			<td>&nbsp;</td>
-<?
-					$r=$r+3;
-				}
-				for ( ; $r < 8 ; $r++) {
-?>
-			<td>&nbsp;</td>
-<?
-				}
-?>
-		</tr>
-<?
-			}
-?>
-		<tr>
-	</table>
-	</div>
-<?
-			}
-?>
 
 	<!--- COMPETENZE -->
 	<div align="center">
@@ -1164,7 +787,7 @@ for ( $i = $prontezza ; $i < 5; $i++) echo "<img src='img/blank.gif' width='10' 
 			<td colspan=9 >&nbsp;</td>
 		</tr>
 		<tr>
-			<td colspan=9 ><button class="w3-btn w3-white w3-border w3-border-red w3-round w3-block" onclick="javascript:window.location.href='scheda3.php'">Versione per Stampa</button></td>
+			<td colspan=9 ><button class="w3-btn w3-white w3-border w3-border-red w3-round w3-block" onclick="javascript:window.location.href='scheda3H.php'">Versione per Stampa</button></td>
 		</tr>
 		<tr>
 			<td colspan=9 ><button class="w3-btn w3-white w3-border w3-border-blue w3-round w3-block" onclick="javascript:window.location.href='main.php'">Indietro</button></td>

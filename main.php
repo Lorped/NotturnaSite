@@ -522,7 +522,11 @@
 		</tr>
 		<tr>
 			<td class="tdc">
+				<? if ($numscheda == 1) { ?>
 				<a href="spendipx.php" class="w3-btn w3-white w3-ripple w3-left-align" style="width:350px;"><img src="img/add.png" height="50" width="50" style="vertical-align:middle"> Aggiungi/Spendi PX</a>
+				<? } else { ?>
+				<a href="spendipxH.php" class="w3-btn w3-white w3-ripple w3-left-align" style="width:350px;"><img src="img/add.png" height="50" width="50" style="vertical-align:middle"> Aggiungi/Spendi PX</a>
+				<? } ?>
 			</td>
 			<td class="tdc">
 				<a href="rubrica.php" class="w3-btn w3-white w3-ripple w3-left-align" style="width:350px;"><img src="img/contacts.png" height="50" width="50" style="vertical-align:middle"> Visualizza/gestisci Rubrica</a>
