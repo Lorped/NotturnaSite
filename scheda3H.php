@@ -67,9 +67,9 @@
 
 	if ( $idclan == 1 ) {
 		$textdisc = "Equip. Potenziato";
-	} elseif ($idclan == 2) {
-		$textdisc = "Elisir";
 	} elseif ($idclan == 3) {
+		$textdisc = "Elisir";
+	} elseif ($idclan == 2) {
 		$textdisc = "Reliquie";
 	}
 
