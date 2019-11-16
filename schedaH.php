@@ -14,7 +14,7 @@
 
 
 	$MySql = "SELECT *  FROM HUNTERpersonaggio
-		LEFT JOIN HUNcospiracy ON HUNTERpersonaggio.idclan=HUNcospiracy.idcospiracy
+		LEFT JOIN HUNconspiracy ON HUNTERpersonaggio.idclan=HUNconspiracy.idconspiracy
 		WHERE idutente = $idutente ";
 
 	$Result = mysql_query($MySql);
@@ -23,7 +23,7 @@
 	$nome=$res['nomepg'];
 	$nomeplayer=$res['nomeplayer'];
 
-	$clan=$res['nomecospiracy'];
+	$clan=$res['nomeconspiracy'];
 	$idstatus=$res['idstatus'];
 
 
@@ -177,7 +177,7 @@
 			<td class="ald"><?=$fdv?>/<?=$fdvmax?></td>
 		</tr>
 		<tr>
-			<td>Cospiracy</td>
+			<td>Conspiracy</td>
 			<td><?=$clan?></td>
 			<td>Status</td>
 			<td><?=$status?> </td>

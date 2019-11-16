@@ -34,10 +34,6 @@ if (!isset($_POST)) die ("No post!");
 	$valtaum2=$p['valtaum2'];
 	$valtaum3=$p['valtaum3'];
 
-	$valnecro1=$p['valnecro1'];
-	$valnecro2=$p['valnecro2'];
-	$valnecro3=$p['valnecro3'];
-
 
 
 
@@ -99,7 +95,7 @@ $zona=mysql_real_escape_string($p['zona']);
 
 
 
-	$Mysql = "SELECT * FROM HUNdiscipline_main WHERE idcospiracy = $Clan and minlvl < 3 ";
+	$Mysql = "SELECT * FROM HUNdiscipline_main WHERE idconspiracy = $Clan and minlvl < 3 ";
 
 	$Result = mysql_query($Mysql);
 	if (mysql_errno()) die ( mysql_errno().": ".mysql_error()."+". $Mysql );

@@ -1,4 +1,4 @@
-<?
+conspiracy<?
 	include ('session_start.inc.php');
 	include ('db_start.inc.php');
 
@@ -111,7 +111,7 @@ function controlla() {
 
   if (TheForm.Clan.value == "") {
 		OK=0;
-		window.document.getElementById("aclan").innerHTML="Definire la Cospiracy del personaggio";
+		window.document.getElementById("aclan").innerHTML="Definire la Conspiracy del personaggio";
 		window.document.getElementById("aclan").style.color="#F00";
 	} else {
 		window.document.getElementById("aclan").innerHTML="";
@@ -349,7 +349,7 @@ function controlla() {
 		case "1":
 
 <?
-		$MySql = "SELECT * FROM HUNdiscipline_main WHERE idcospiracy = 1 and minlvl < 3 ";
+		$MySql = "SELECT * FROM HUNdiscipline_main WHERE idconspiracy = 1 and minlvl < 3 ";
 		$Results = mysql_query($MySql);
 		$i=0;
 		while ( $Res = mysql_fetch_array($Results))  {
@@ -364,7 +364,7 @@ function controlla() {
 			break;
 		case "2":
 		<?
-				$MySql = "SELECT * FROM HUNdiscipline_main WHERE idcospiracy = 2 and minlvl < 3 ";
+				$MySql = "SELECT * FROM HUNdiscipline_main WHERE idconspiracy = 2 and minlvl < 3 ";
 				$Results = mysql_query($MySql);
 				$i=0;
 				while ( $Res = mysql_fetch_array($Results))  {
@@ -378,7 +378,7 @@ function controlla() {
 			break;
 		case "3":
 		<?
-				$MySql = "SELECT * FROM HUNdiscipline_main WHERE idcospiracy = 3 and minlvl < 3 ";
+				$MySql = "SELECT * FROM HUNdiscipline_main WHERE idconspiracy = 3 and minlvl < 3 ";
 				$Results = mysql_query($MySql);
 				$i=0;
 				while ( $Res = mysql_fetch_array($Results))  {
@@ -577,16 +577,16 @@ while ( $Res = mysql_fetch_array($Results))  { ?>
 			<input name="nomeplayer" id="nomeplayer" type="text" maxlength="25" pattern="[A-Z\ba-z\b][a-zA-Z\s']*" required onchange="controlla()"/></td>
 		</tr>
     	<tr>
-			<td >Cospiracy </td>
+			<td >Conspiracy </td>
 			<td colspan="2" class="alc">
         		<select name="Clan" id="Clan" onchange="controlla()">
         		<option value=''></option>
 <?
-$MySql = "SELECT * FROM HUNcospiracy ";
+$MySql = "SELECT * FROM HUNconspiracy ";
 $Results = mysql_query($MySql);
 while ( $Res = mysql_fetch_array($Results))  {
-	?> <option value='<?=$Res['idcospiracy']?>'><?=$Res['nomecospiracy']?></option>
-	<script>  LVL1 [<?=$Res['idcospiracy']?>] = '<?=$Res['lvl1']?>';</script>
+	?> <option value='<?=$Res['idconspiracy']?>'><?=$Res['nomeconspiracy']?></option>
+	<script>  LVL1 [<?=$Res['idconspiracy']?>] = '<?=$Res['lvl1']?>';</script>
 	<?
 }
 
@@ -765,7 +765,7 @@ while ( $Res = mysql_fetch_array($Results))  {
 		<table width="65%" border="0" align="center" cellpadding="1" cellspacing="1" id="tabella1" style="display: none;">
 
 				<?
-				 	$MySql = "SELECT * FROM HUNdiscipline_main WHERE idcospiracy = 1 and minlvl < 3 ";
+				 	$MySql = "SELECT * FROM HUNdiscipline_main WHERE idconspiracy = 1 and minlvl < 3 ";
 					$Results = mysql_query($MySql);
 					while ( $Res = mysql_fetch_array($Results))  {
 						if ($Res['minlvl']==$Res['maxlvl']) {
@@ -817,7 +817,7 @@ while ( $Res = mysql_fetch_array($Results))  {
 		<table width="65%" border="0" align="center" cellpadding="1" cellspacing="1" id="tabella2" style="display: none;">
 
 				<?
-					$MySql = "SELECT * FROM HUNdiscipline_main WHERE idcospiracy = 2 and minlvl < 3 ";
+					$MySql = "SELECT * FROM HUNdiscipline_main WHERE idconspiracy = 2 and minlvl < 3 ";
 					$Results = mysql_query($MySql);
 					while ( $Res = mysql_fetch_array($Results))  {
 						if ($Res['minlvl']==$Res['maxlvl']) {
@@ -869,7 +869,7 @@ while ( $Res = mysql_fetch_array($Results))  {
 		<table width="65%" border="0" align="center" cellpadding="1" cellspacing="1" id="tabella3" style="display: none;">
 
 				<?
-					$MySql = "SELECT * FROM HUNdiscipline_main WHERE idcospiracy = 3 and minlvl < 3 ";
+					$MySql = "SELECT * FROM HUNdiscipline_main WHERE idconspiracy = 3 and minlvl < 3 ";
 					$Results = mysql_query($MySql);
 					while ( $Res = mysql_fetch_array($Results))  {
 						if ($Res['minlvl']==$Res['maxlvl']) {

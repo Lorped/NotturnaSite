@@ -14,9 +14,8 @@
 
 //	$idutente = 1;
 
-
 	$MySql = "SELECT *  FROM HUNTERpersonaggio
-		LEFT JOIN HUNcospiracy ON HUNTERpersonaggio.idclan=HUNcospiracy.idcospiracy
+		LEFT JOIN HUNconspiracy ON HUNTERpersonaggio.idclan=HUNconspiracy.idconspiracy
 		WHERE idutente = $idutente ";
 
 	$Result = mysql_query($MySql);
@@ -24,7 +23,7 @@
 
 	$nome=$res['nomepg'];
 
-	$clan=$res['nomecospiracy'];
+	$clan=$res['nomeconspiracy'];
 	$idclan=$res['idclan'];
 	$idstatus=$res['idstatus'];
 
