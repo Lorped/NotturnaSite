@@ -487,11 +487,11 @@
 			<div class="list-inner">
 				<div class="main-header">HUNTER</div>
 				<div class="props">
-        			<div class="prop" style="width:8%">Nome:</div>
-          			<div class="prop_value" style="width:32%"><?=$nome?></div>
-					<div class="prop" style="width:8%">Clan:</div>
-					<div class="prop_value" style="width:20%"><?=$clan?></div>
-					<div class="prop" style="width:20%">&nbsp;</div>
+        	<div class="prop" style="width:8%">Nome:</div>
+          <div class="prop_value" style="width:32%"><?=$nome?></div>
+					<div class="prop" style="width:10%">Conspiracy:</div>
+					<div class="prop_value" style="width:35%"><?=$clan?></div>
+					<div class="prop" style="width:3%">&nbsp;</div>
 					<div class="prop_value" style="width:12%">&nbsp;</div>
 					<div class="prop" style="width:8%">Status:</div>
 					<div class="prop_value" style="width:32%"><?=$status?> </div>
