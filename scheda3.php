@@ -947,7 +947,7 @@ for ( $i = $prontezza ; $i < 5; $i++) echo "A";
 	$rissa=mysql_fetch_array ( mysql_query($Mysql) )['livello'];
 
 	if ($rissa == "" ) $rissa=0;
-	$rissa=$rissa -2;
+	// $rissa=$rissa -2;
 	if ($rissa <0 ) $rissa=0;
 
 	$Mysql="SELECT livello FROM skill WHERE idskill=24 AND idutente=$idutente";
