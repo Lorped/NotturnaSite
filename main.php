@@ -461,6 +461,13 @@
 				<option value="<?=$res['idutente']?>" ><?=$res['nomepg']?></option>
 <?
 				}
+				$Mysql ="SELECT nomepg, idutente FROM HUNTERpersonaggio ORDER BY nomepg";
+				$Result=mysql_query($Mysql);
+				while ($res=mysql_fetch_array($Result) ) {
+		?>
+				<option value="<?=$res['idutente']?>" ><?=$res['nomepg']?> - (H)</option>
+		<?
+				}
 ?>
 				</select></div></form>
 			</td>
@@ -476,6 +483,15 @@
 				while ($res=mysql_fetch_array($Result) ){
 ?>
 				<option value="<?=$res['idutente']?>" ><?=$res['nomepg']?></option>
+<?
+				}
+				$Mysql ="SELECT nomepg, idutente FROM HUNTERpersonaggio ORDER BY nomepg";
+				$Result=mysql_query($Mysql);
+				while ($res=mysql_fetch_array($Result) ) {
+?>
+				<!--
+					<option value="<?=$res['idutente']?>" ><?=$res['nomepg']?> - (H)</option>
+				-->
 <?
 				}
 ?>
@@ -535,7 +551,7 @@
 				<? if ($numscheda == 1) { ?>
 				<a href="bg.php" class="w3-btn w3-white w3-ripple w3-left-align" style="width:350px;"><img src="img/master.png" height="50" width="50" style="vertical-align:middle"> Modifica Fama , Background ecc..</a>
 				<? } else { ?>
-				<a href="bgH.php" class="w3-btn w3-white w3-ripple w3-left-align" style="width:350px;"><img src="img/master.png" height="50" width="50" style="vertical-align:middle"> Modifica Fama , Background ecc..</a>					
+				<a href="bgH.php" class="w3-btn w3-white w3-ripple w3-left-align" style="width:350px;"><img src="img/master.png" height="50" width="50" style="vertical-align:middle"> Modifica Fama , Background ecc..</a>
 				<? } ?>
 			</td>
 		</tr>

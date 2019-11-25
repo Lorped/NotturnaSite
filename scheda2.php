@@ -12,6 +12,8 @@
 
 	$id=$_POST['id'];
 
+	$hun=0;
+	$vamp=0;
 
 		//controllo-aggiorno fdv per corretta visione master
 
@@ -19,14 +21,30 @@
 		$Result=mysql_query ($Mysql);
 		$res=mysql_fetch_array($Result);
 
+		if ( $res == NULL ) {
+			$hun=1;
+			$Mysql="SELECT fdv,fdvmax,lastfdv FROM HUNTERpersonaggio WHERE idutente=$id";
+			$Result=mysql_query ($Mysql);
+			$res=mysql_fetch_array($Result);
+
+		} else {
+			$vamp=1;
+		}
+
 		$fdv=$res['fdv'];
 		$fdvmax=$res['fdvmax'];
 		$lastfdv=$res['lastfdv'];
 
 		if ( $fdv == $fdvmax ) {  // tutto ok
 
-			$Mysql="UPDATE personaggio SET lastfdv=NOW()  WHERE idutente=$id";
-			$Result=mysql_query ($Mysql);
+			if ( $vamp == 1) {
+				$Mysql="UPDATE personaggio SET lastfdv=NOW()  WHERE idutente=$id";
+				$Result=mysql_query ($Mysql);
+			} else {
+				$Mysql="UPDATE HUNTERpersonaggio SET lastfdv=NOW()  WHERE idutente=$id";
+				$Result=mysql_query ($Mysql);
+			}
+
 		} else {
 
 			$base=strtotime("2017-01-01 18:00:00");
@@ -48,8 +66,13 @@
 
 				$newlastfdvstring=date("Y-m-d H:i:s",$newlastfdv );
 
-				$Mysql="UPDATE personaggio SET fdv = $newfdv , lastfdv = '$newlastfdvstring' WHERE idutente=$id";
-				$Result=mysql_query ($Mysql);
+				if ( $vamp == 1) {
+					$Mysql="UPDATE personaggio SET fdv = $newfdv , lastfdv = '$newlastfdvstring' WHERE idutente=$id";
+					$Result=mysql_query ($Mysql);
+				} else {
+					$Mysql="UPDATE HUNTERpersonaggio SET fdv = $newfdv , lastfdv = '$newlastfdvstring' WHERE idutente=$id";
+					$Result=mysql_query ($Mysql);
+				}
 
 			} else {
 				// echo "<br>da quando ho controlato fdv non è passato un tramonto";
@@ -59,6 +82,7 @@
 
 
 
+if ($vamp == 1) {
 
 
 	$MySql = "SELECT *  FROM personaggio
@@ -68,7 +92,12 @@
 		LEFT JOIN generazione ON personaggio.generazione=generazione.generazione
 		LEFT JOIN blood ON personaggio.bloodp=blood.bloodp
 		WHERE idutente = $id ";
-
+} else {
+	$hun = 1 ;
+	$MySql = "SELECT *  FROM HUNTERpersonaggio
+		LEFT JOIN HUNconspiracy ON HUNTERpersonaggio.idclan=HUNconspiracy.idconspiracy
+		WHERE idutente = $id ";
+}
 	$Result = mysql_query($MySql);
 	$res = mysql_fetch_array($Result);
 
@@ -76,6 +105,11 @@
 	$nomeplayer=$res['nomeplayer'];
 
 	$clan=$res['nomeclan'];
+
+	if ( $hun==1) {
+		$clan=$res['nomeconspiracy'];
+	}
+
 	$generazione=$res['generazione'];
 
 	$ps=$res['ps'];
@@ -113,6 +147,19 @@
 
 	$sete=$res['sete']+$res['addsete'];
 	$bp=$res['bloodp'];
+
+	if ( $hun==1) {
+		$clan=$res['nomeconspiracy'];
+		$idstatus = $res['idstatus'];
+
+		if ( $idstatus == 1 ) {
+			$status = $res['lvl1'];
+		} elseif ($idstatus == 2) {
+			$status = $res['lvl2'];
+		} elseif ($idstatus == 3) {
+			$status = $res['lvl3'];
+		}
+	}
 
 	//
 	$rifugio = $res['rifugio'];
@@ -202,6 +249,10 @@
 		<tr>
 			<td colspan=7><hr></td>
 		</tr>
+
+<?
+	if ($vamp == 1) {
+?>
 		<tr>
 			<td>Nome</td>
 			<td class="owner"><?=$nome?></td>
@@ -244,17 +295,56 @@
 			<td>Punti Ferita</td>
 			<td class="ald"><?=$pf?></td>
 		</tr>
-<!--
+<?
+} else {
+?>
 		<tr>
+			<td>Nome</td>
+			<td class="owner"><?=$nome?></td>
+			<td>Player</td>
+			<td><?=$nomeplayer?></td>
 			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-			<td>&nbsp;</td>
-			<td colspan=2 class="ald"><? /* for($i=0;$i<$ps; $i++) { echo '&EmptySmallSquare;';} */ ?></td>
+			<td>Forza di volontà</td>
+			<td class="ald"><?=$fdv?>/<?=$fdvmax?></td>
 		</tr>
+		<tr>
+			<td>Conspiracy</td>
+			<td><?=$clan?></td>
+			<td>Status</td>
+			<td><?=$status?> </td>
+			<td>&nbsp;</td>
+			<td>Res. Dominazione</td>
+			<td class="ald"><?= floor(($intelligenza+$prontezza+$percezione+$carisma+$fdv)/5)?></td>
+		</tr>
+		<tr>
+			<td>XP</td>
+			<td ><?=$xp." (spesi ".$xpspesi.")"?></td>
+			<td colspan=3>&nbsp; </td>
+			<td>&nbsp;</td>
+			<td>&nbsp;</td>
+		</tr>
+
+		<tr>
+			<td>SafeHouse</td>
+			<td><?=$rifugio?></td>
+			<td>Zona</td>
+			<td><?=$zona?></td>
+			<td>&nbsp;</td>
+			<td>Punti Ferita</td>
+			<td class="ald"><?=$pf?></td>
+		</tr>
+<?
+}
+?>
+<!--
+
 -->
 	</table>
+
+<?
+if ( $vamp ==1) {
+?>
+
 	<table>
 		<tr>
 			<td width="150">Fama in Città</td>
@@ -280,6 +370,9 @@ for ( $i = $fama3 ; $i < 5; $i++) echo "<img src='img/blank.gif' width='10' heig
 			<td colspan=4>Ruolo nella Camarilla &nbsp;&nbsp; _________________________</td>
 		</tr>
 	</table>
+<?
+}
+?>
 	</div>
 	<div align="center">
 	<table>
@@ -377,7 +470,13 @@ for ( $i = $prontezza ; $i < 5; $i++) echo "<img src='img/blank.gif' width='10' 
 			<td width="60">&nbsp;</td>
 		</tr>
 		<tr>
-			<td colspan=8 class="alc title2"><hr>Discipline<hr></td>
+			<? if ($vamp ==1 ) {
+				$xxx="Discipline";
+			} else {
+				$xxx="Equipaggiamento potenziato, Elisir, Reliquie";
+			}
+			?>
+			<td colspan=8 class="alc title2"><hr><?=$xxx?><hr></td>
 		</tr>
 
 
@@ -387,6 +486,12 @@ for ( $i = $prontezza ; $i < 5; $i++) echo "<img src='img/blank.gif' width='10' 
           		LEFT JOIN discipline_main ON discipline_main.iddisciplina=discipline.iddisciplina
           		WHERE idutente = $id
           		ORDER BY discipline.iddisciplina";
+			if ( $hun == 1) {
+				$MySql = "SELECT  nomedisc ,livello, HUNdiscipline.iddisciplina, maxlvl  FROM HUNdiscipline
+								LEFT JOIN HUNdiscipline_main ON HUNdiscipline_main.iddisciplina=HUNdiscipline.iddisciplina
+								WHERE idutente = $id
+								ORDER BY HUNdiscipline.iddisciplina";
+			}
 			$Results = mysql_query($MySql);
 			if (mysql_errno())  die ( mysql_errno().": ".mysql_error() );
 			$num_rows = mysql_num_rows($Results);
@@ -973,6 +1078,8 @@ for ( $i = $prontezza ; $i < 5; $i++) echo "<img src='img/blank.gif' width='10' 
 
 			for ( $i=0; $i < floor($num_rows/3) ; $i++) {
 				$res = mysql_fetch_array($Results);
+				if ($res['nomeback'] == "Rifugio" && $hun==1) $res['nomeback']="SafeHouse";
+				if ($res['nomeback'] == "Seguaci" && $hun==1) $res['nomeback']="Collaboratori";
 ?>
 		<tr>
 			<td><?=$res['nomeback']?></td>
@@ -985,6 +1092,8 @@ for ( $i = $prontezza ; $i < 5; $i++) echo "<img src='img/blank.gif' width='10' 
 			<td>&nbsp;</td>
 <?
 				$res = mysql_fetch_array($Results);
+				if ($res['nomeback'] == "Rifugio" && $hun==1) $res['nomeback']="SafeHouse";
+				if ($res['nomeback'] == "Seguaci" && $hun==1) $res['nomeback']="Collaboratori";
 ?>
 			<td><?=$res['nomeback']?></td>
 			<td class="ald" >
@@ -996,6 +1105,8 @@ for ( $i = $prontezza ; $i < 5; $i++) echo "<img src='img/blank.gif' width='10' 
 			<td>&nbsp;</td>
 <?
 				$res = mysql_fetch_array($Results);
+				if ($res['nomeback'] == "Rifugio" && $hun==1) $res['nomeback']="SafeHouse";
+				if ($res['nomeback'] == "Seguaci" && $hun==1) $res['nomeback']="Collaboratori";
 ?>
 			<td><?=$res['nomeback']?></td>
 			<td class="ald" >
@@ -1014,6 +1125,8 @@ for ( $i = $prontezza ; $i < 5; $i++) echo "<img src='img/blank.gif' width='10' 
 				$r=0;
 				for ( $k=0; $k < $num_rows-$i*3 ; $k++) {
 					$res = mysql_fetch_array($Results);
+					if ($res['nomeback'] == "Rifugio" && $hun==1) $res['nomeback']="SafeHouse";
+					if ($res['nomeback'] == "Seguaci" && $hun==1) $res['nomeback']="Collaboratori";
 ?>
 			<td><?=$res['nomeback']?></td>
 			<td class="ald">
