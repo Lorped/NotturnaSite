@@ -176,6 +176,17 @@ if ($vamp == 1) {
 		$schivare=$res['livello'];
 	}
 	$pf = (3 + $attutimento)*2 + $robustezza + $schivare ;
+	$Mysql="SELECT * from poteri where idpotere=70 and idutente=$idutente";
+	$Result=mysql_query($Mysql);
+	if ( $res=mysql_fetch_array($Result)) {
+		$pf = $pf + $robustezza + 5 ;
+	}
+	$Mysql="SELECT * from poteri where idpotere=74 and idutente=$idutente";
+	$Result=mysql_query($Mysql);
+	if ( $res=mysql_fetch_array($Result)) {
+		$pf = $pf + 5 ;   //Resilienza già +5
+	}
+
 
 	// ferita permanente -3 PF
 	$Mysql="SELECT * from pregidifetti where idpregio =11 and idutente=$id";
@@ -183,7 +194,12 @@ if ($vamp == 1) {
 	if ( $res=mysql_fetch_array($Result)) {
 		$pf=$pf-3;
 	}
-
+	// 9 vite +10 PF
+	$Mysql="SELECT * from pregidifetti where idpregio =126 and idutente=$idutente";
+	$Result=mysql_query($Mysql);
+	if ( $res=mysql_fetch_array($Result)) {
+		$pf=$pf+10;
+	}
 
 ?>
 
