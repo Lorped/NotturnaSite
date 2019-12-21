@@ -35,6 +35,17 @@
 
 		}
 
+		if (isset($_POST['InsUrl']) ){
+			$url=mysql_real_escape_string($_POST['url']);
+
+			$url=htmlspecialchars($url);
+
+			$Mysql="UPDATE personaggio SET urldt= '$url' WHERE idutente=$idutente";
+			$Result=mysql_query($Mysql);
+			if (mysql_errno()) die ( mysql_errno().": ".mysql_error()."+". $Mysql );
+
+		}
+
 	}
 
 	$Mysql="SELECT * FROM personaggio WHERE idutente=$idutente";
@@ -43,6 +54,7 @@
 	$bio=$res['bio'];
 	$note=$res['note'];
 	$notemaster=$res['notemaster'];
+	$urldt=$res['urldt'];
 
 
 ?>
@@ -134,7 +146,7 @@
 		</tr>
 		<tr>
 			<form method=POST action="" name="bio" >
-				<td colspan=7><textarea name="biodata" cols="116" rows="10" ><?=$bio?></textarea><br>
+				<td colspan=7><textarea name="biodata" cols="116" rows="8" ><?=$bio?></textarea><br>
 			<button class="w3-btn w3-white w3-border w3-border-red w3-round w3-block" Name="InsBio" onclick="document.bio.submit();">Inserisci Bio</button></td>
 			</form>
 		</tr>
@@ -148,6 +160,13 @@
 			<form method=POST action="" name="note" >
 				<td colspan=7><textarea name="notedata" cols="116" rows="5" ><?=$note?></textarea><br>
 			<button class="w3-btn w3-white w3-border w3-border-red w3-round w3-block" Name="InsNote" onclick="document.note.submit();">Inserisci Note</button></td>
+			</form>
+		</tr>
+
+		<tr>
+			<form method=POST action="" name="urldt" >
+				<td colspan=5><input type="text" name="url" value='<?=$urldt?>' maxlength="120" class="w3-block"></input></td>
+				<td colspan=2><button class="w3-btn w3-white w3-border w3-border-blue w3-round w3-block" Name="InsUrl" onclick="document.note.submit();">Inserisci URL DT</button></td>
 			</form>
 		</tr>
 		<tr>
