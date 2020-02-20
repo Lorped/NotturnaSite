@@ -144,7 +144,7 @@
 				<a href="docs/NOTTURNA-Regole-Comportamentali.pdf" class="w3-btn w3-white w3-ripple w3-left-align" style="width:400px;" target="_blank"> Regole di Comportamento<br>&nbsp;</a>
 			</td>
 			<td>
-				<a href="docs/Adesione Notturna.pdf" class="w3-btn w3-white w3-ripple w3-left-align" style="width:400px;" target="_blank"> ADESIONE NOTTURNA CON LIBERATORIA<br><span class="small">(da stampare e consegnare compilata AD OGNI EVENTO)</span></a>
+				<a href="https://drive.google.com/file/d/1_m9pQfcwDbGLB7quaxA7Woo_kw0VOIvT/view?usp=drivesdk" class="w3-btn w3-white w3-ripple w3-left-align" style="width:400px;" target="_blank"> ADESIONE NOTTURNA CON LIBERATORIA<br><span class="small">(da stampare e consegnare compilata AD OGNI EVENTO)</span></a>
 				<!-- <a href="docs/NOTTURNA-LIBERATORIA-MINORENNI.pdf" class="w3-btn w3-white w3-ripple w3-left-align" style="width:400px;" target="_blank"> Liberatoria Minori<br><span class="small">(da stampare e consegnare compilata all'evento)</span></a> -->
 			</td>
 		</tr>
