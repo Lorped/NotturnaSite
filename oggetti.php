@@ -31,36 +31,53 @@
 		$condtypeS='addS'.$idx;
 		$condtypeD='addD'.$idx;
 		$condtypeP='addP'.$idx;
+		$conddomanda='addDom'.$idx;
+
+		if ( ! isset($_POST[$conddomanda] ) ) {
+			$val=$_POST['val'];
+
+			if (isset($_POST[$condtypeA])) {
+				$tipocond="A";
+				$attributo=$_POST['attributo'];
+			}
+			if (isset($_POST[$condtypeS])) {
+				$tipocond="S";
+				$attributo=$_POST['Skill'];
+			}
+			if (isset($_POST[$condtypeD])) {
+				$tipocond="D";
+				$attributo=$_POST['Disciplina'];
+			}
+			if (isset($_POST[$condtypeP])) {
+				$tipocond="P";
+				$attributo=$_POST['Potere'];
+				$val=1;
+			}
+
+			$descrX=mysql_real_escape_string($_POST['descrX']);
 
 
-		$val=$_POST['val'];
+			$Mysql="INSERT INTO cond_oggetti ( idoggetto, tipocond, tabcond, valcond, descrX) values($idx, '$tipocond', $attributo, $val, '$descrX')";
 
-		if (isset($_POST[$condtypeA])) {
-			$tipocond="A";
-			$attributo=$_POST['attributo'];
+
+			mysql_query($Mysql);
+			if (mysql_errno()) die ( mysql_errno().": ".mysql_error() ."+".$Mysql);
 		}
-		if (isset($_POST[$condtypeS])) {
-			$tipocond="S";
-			$attributo=$_POST['Skill'];
+
+		if (isset($_POST[$conddomanda])) {
+			$newdom= mysql_real_escape_string($_POST['Xdomanda']);
+			$newr1= mysql_real_escape_string($_POST['Xr1']);
+			$newr2= mysql_real_escape_string($_POST['Xr2']);
+
+			$Mysql="UPDATE oggetti
+				SET ifdomanda = 1 ,
+					domanda ='$newdom' ,
+					r1 ='$newr1' ,
+					r2 = '$newr2'
+					WHERE idoggetto= $idx";
+			mysql_query($Mysql);
+			if (mysql_errno()) die ( mysql_errno().": ".mysql_error() ."+".$Mysql);
 		}
-		if (isset($_POST[$condtypeD])) {
-			$tipocond="D";
-			$attributo=$_POST['Disciplina'];
-		}
-		if (isset($_POST[$condtypeP])) {
-			$tipocond="P";
-			$attributo=$_POST['Potere'];
-			$val=1;
-		}
-
-		$descrX=mysql_real_escape_string($_POST['descrX']);
-
-
-		$Mysql="INSERT INTO cond_oggetti ( idoggetto, tipocond, tabcond, valcond, descrX) values($idx, '$tipocond', $attributo, $val, '$descrX')";
-
-
-		mysql_query($Mysql);
-		if (mysql_errno()) die ( mysql_errno().": ".mysql_error() ."+".$Mysql);
 	}
 
 
@@ -70,6 +87,21 @@
 		mysql_query($Mysql);
 		if (mysql_errno()) die ( mysql_errno().": ".mysql_error() ."+".$Mysql);
 	}
+
+	if (isset($_POST['cccxbdom']) ){
+		$ccx=$_POST['cccxdom'];
+		$Mysql="UPDATE oggetti
+			SET ifdomanda = 0 ,
+				domanda = NULL ,
+				r1 = NULL ,
+				r2 = NULL
+				WHERE idoggetto= $ccx";
+		
+		mysql_query($Mysql);
+
+		if (mysql_errno()) die ( mysql_errno().": ".mysql_error() ."+".$Mysql);
+	}
+
 	if (isset($_POST['cancXX']) ){
 		$ccx=$_POST['ccx'];
 		$Mysql="DELETE FROM cond_oggetti WHERE idoggetto= $ccx";
@@ -78,6 +110,7 @@
 		mysql_query($Mysql);
 		if (mysql_errno()) die ( mysql_errno().": ".mysql_error() ."+".$Mysql);
 	}
+
 
 ?>
 
@@ -192,6 +225,10 @@
 		$Result=mysql_query($Mysql);
 		while ( $res=mysql_fetch_array($Result)) {
 			$idx=$res['idoggetto'];
+			$ifdomanda=$res['ifdomanda'];
+			$domanda=$res['domanda'];
+			$r1=$res['r1'];
+			$r2=$res['r2'];
 ?>
 		<tr>
 
@@ -258,6 +295,18 @@
 				}
 			}
 ?>
+<? if ($ifdomanda != '0') {
+?>
+	<tr>
+		<td>&nbsp;</td>
+		<td colspan=2> <?=$domanda?> </td>
+		<td>Si: <?=$r1 ?> <br> No: <?=$r2?> </td>
+		<td><form name="Cancdomanda"  method=post action=""><input type=hidden name="cccxdom" value="<?=$idx?>" ><button name="cccxbdom" class="w3-btn w3-white w3-border w3-border-red w3-round " onClick="submit();">X</button></form></td></tr>
+	</tr>
+<?
+}
+?>
+
 		<tr>
 			<td colspan=8>
 				<table id="tabellacond<?=$idx?>" width="100%" border="0" align="center" cellpadding="1" cellspacing="1" style="display: none">
@@ -277,7 +326,7 @@
 						</select>
 					</td>
 					<td>Min.</td>
-					<td><input name=val type=number min=1 max=5 size=1 value=1><td>
+					<td><input name=val type=number min=1 max=5 size=1 value=1></td>
 					<td class="alc"><textarea name="descrX" cols="40" rows="3" ></textarea></td>
 					<td><button name="addA<?=$idx?>" class="w3-btn w3-white w3-border w3-border-blue w3-round " onClick="submit();">Aggiungi</button></td>
 					</form>
@@ -296,7 +345,7 @@
 						</select>
 					</td>
 					<td>Min.</td>
-					<td><input name=val type=number min=1 max=5 size=1 value=1><td>
+					<td><input name=val type=number min=1 max=5 size=1 value=1></td>
 					<td class="alc"><textarea name="descrX" cols="40" rows="3" ></textarea></td>
 					<td><button name="addS<?=$idx?>" class="w3-btn w3-white w3-border w3-border-blue w3-round " onClick="submit();">Aggiungi</button></td>
 					</form>
@@ -315,7 +364,7 @@
 						</select>
 					</td>
 					<td>Min.</td>
-					<td><input name=val type=number min=1 max=5 size=1 value=1><td>
+					<td><input name=val type=number min=1 max=5 size=1 value=1></td>
 					<td class="alc"><textarea name="descrX" cols="40" rows="3" ></textarea></td>
 					<td><button name="addD<?=$idx?>" class="w3-btn w3-white w3-border w3-border-blue w3-round " onClick="submit();">Aggiungi</button></td>
 					</form>
@@ -334,9 +383,27 @@
 						</select>
 					</td>
 					<td>&nbsp;</td>
-					<td>&nbsp;<td>
+					<td>&nbsp;</td>
 					<td class="alc"><textarea name="descrX" cols="40" rows="3" ></textarea></td>
 					<td><button name="addP<?=$idx?>" class="w3-btn w3-white w3-border w3-border-blue w3-round " onClick="submit();">Aggiungi</button></td>
+					</form>
+				</tr>
+				<tr><form name="newDom<?=$idx?>" method=post action=""><input type=hidden name="id" value="<?=$idx?>" >
+					<td>Domanda</td>
+					<td colspan=2></td>
+					<td>&nbsp;</td>
+					<td>&nbsp;</td>
+					<td class="alc" colspan= ><textarea name="Xdomanda" cols="40" rows="3"  ><?=$domanda?></textarea></td>
+					<td><button name="addDom<?=$idx?>" class="w3-btn w3-white w3-border w3-border-blue w3-round " onClick="submit();">Aggiungi</button></td>
+
+				</tr>
+
+				<tr>
+					<td>SI:</td>
+					<td colspan=3><textarea name="Xr1" cols="40" rows="3" ><?=$r1?></textarea></td>
+					<td>No:</td>
+					<td class="alc"><textarea name="Xr2" cols="40" rows="3" ><?=$r2?></textarea></td>
+					<td>&nbsp;</td>
 					</form>
 				</tr>
 				</table>
