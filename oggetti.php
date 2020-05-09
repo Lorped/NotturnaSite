@@ -96,7 +96,7 @@
 				r1 = NULL ,
 				r2 = NULL
 				WHERE idoggetto= $ccx";
-		
+
 		mysql_query($Mysql);
 
 		if (mysql_errno()) die ( mysql_errno().": ".mysql_error() ."+".$Mysql);
@@ -243,8 +243,8 @@
 
 		</tr>
 <?
-
-			$Mysql2="SELECT * FROM cond_oggetti WHERE idoggetto=$idx ORDER BY valcond ASC";
+ //if ($ifdomanda == '0') {
+			$Mysql2="SELECT * FROM cond_oggetti WHERE idoggetto=$idx AND risp IS NULL ORDER BY valcond ASC";
 			$Result2=mysql_query($Mysql2);
 			while ( $res2=mysql_fetch_array($Result2)) {
 				if ($res2['tipocond'] == 'A' ){
@@ -294,15 +294,73 @@
 					<?
 				}
 			}
+//		}
 ?>
 <? if ($ifdomanda != '0') {
 ?>
 	<tr>
 		<td>&nbsp;</td>
 		<td colspan=2> <?=$domanda?> </td>
-		<td>Si: <?=$r1 ?> <br> No: <?=$r2?> </td>
+		<td><b>Si:</b> <?=$r1 ?> <br> <b>No:</b> <?=$r2?> </td>
 		<td><form name="Cancdomanda"  method=post action=""><input type=hidden name="cccxdom" value="<?=$idx?>" ><button name="cccxbdom" class="w3-btn w3-white w3-border w3-border-red w3-round " onClick="submit();">X</button></form></td></tr>
 	</tr>
+
+	<?
+
+				$Mysql2="SELECT * FROM cond_oggetti WHERE idoggetto=$idx AND risp IS NOT NULL ORDER BY valcond ASC";
+				$Result2=mysql_query($Mysql2);
+				while ( $res2=mysql_fetch_array($Result2)) {
+					if ($res2['tipocond'] == 'A' ){
+						switch ( $res2['tabcond'] ) {
+							case 1: $cc="Forza" ; break;
+							case 2: $cc="Destrezza" ; break;
+							case 3: $cc="Attutimento" ; break;
+							case 4: $cc="Carisma" ; break;
+							case 5: $cc="Persuasione" ; break;
+							case 6: $cc="Saggezza" ; break;
+							case 7: $cc="Percezione" ; break;
+							case 8: $cc="Intelligenza" ; break;
+							case 9: $cc="Prontezza" ; break;
+						}
+						?>
+							<tr> <td><?=$res2['risp']=='S'?'SI:':'NO:'?></td><td> <?=$cc?> </td>  <td>Min. <?=$res2['valcond'] ?> </td><td><?=$res2['descrX'] ?> </td> <td><form name="<?=$idx.$res2['idcondizione']?>" method=post action=""><input type=hidden name="ccx" value="<?=$res2['idcondizione']?>" ><button name="cccxb" class="w3-btn w3-white w3-border w3-border-red w3-round " onClick="submit();">X</button></form></td></tr>
+						<?
+					}
+					if ($res2['tipocond'] == 'S' ){
+						$ids=$res2['tabcond'];
+						$Mysql4="SELECT nomeskill FROM skill_main WHERE idskill = $ids";
+						$Result4=mysql_query($Mysql4);
+						$res4=mysql_fetch_array($Result4);
+
+						?>
+							<tr> <td><?=$res2['risp']=='S'?'SI:':'NO:'?></td><td> <?=$res4['nomeskill']?> </td>  <td>Min. <?=$res2['valcond'] ?> </td><td><?=$res2['descrX'] ?> </td> <td><form name="<?=$idx.$res2['idcondizione']?>"  method=post action=""><input type=hidden name="ccx" value="<?=$res2['idcondizione']?>" ><button name="cccxb" class="w3-btn w3-white w3-border w3-border-red w3-round " onClick="submit();">X</button></form></td></tr>
+						<?
+					}
+					if ($res2['tipocond'] == 'D' ){
+						$ids=$res2['tabcond'];
+						$Mysql4="SELECT nomedisc FROM discipline_main WHERE iddisciplina = $ids";
+						$Result4=mysql_query($Mysql4);
+						$res4=mysql_fetch_array($Result4);
+
+						?>
+							<tr> <td><?=$res2['risp']=='S'?'SI:':'NO:'?></td><td> <?=$res4['nomedisc']?> </td>  <td>Min. <?=$res2['valcond'] ?> </td><td><?=$res2['descrX'] ?> </td> <td><form name="<?=$idx.$res2['idcondizione']?>"  method=post action=""><input type=hidden name="ccx" value="<?=$res2['idcondizione']?>" ><button name="cccxb" class="w3-btn w3-white w3-border w3-border-red w3-round " onClick="submit();">X</button></form></td></tr>
+						<?
+					}
+					if ($res2['tipocond'] == 'P' ){
+						$ids=$res2['tabcond'];
+						$Mysql4="SELECT nomepotere FROM poteri_main WHERE idpotere = $ids";
+						$Result4=mysql_query($Mysql4);
+						$res4=mysql_fetch_array($Result4);
+
+						?>
+							<tr> <td><?=$res2['risp']=='S'?'SI:':'NO:'?></td><td> <?=$res4['nomepotere']?> </td>  <td>&nbsp;</td><td><?=$res2['descrX'] ?> </td> <td><form name="<?=$idx.$res2['idcondizione']?>"  method=post action=""><input type=hidden name="ccx" value="<?=$res2['idcondizione']?>" ><button name="cccxb" class="w3-btn w3-white w3-border w3-border-red w3-round " onClick="submit();">X</button></form></td></tr>
+						<?
+					}
+				}
+	?>
+
+
+
 <?
 }
 ?>
@@ -325,8 +383,8 @@
 						<option value="9">Prontezza</option>
 						</select>
 					</td>
-					<td>Min.</td>
-					<td><input name=val type=number min=1 max=5 size=1 value=1></td>
+					<td><? if($res['ifdomanda']!='0'){?>Sempre<input type="radio" name="risp" value="" checked><br> SI<input type="radio" name="risp" value="S"><br> NO<input type="radio" name="N" value="N" > <?}?></td>
+					<td>Min. <input name=val type=number min=1 max=5 size=1 value=1></td>
 					<td class="alc"><textarea name="descrX" cols="40" rows="3" ></textarea></td>
 					<td><button name="addA<?=$idx?>" class="w3-btn w3-white w3-border w3-border-blue w3-round " onClick="submit();">Aggiungi</button></td>
 					</form>
@@ -344,8 +402,8 @@
 ?>
 						</select>
 					</td>
-					<td>Min.</td>
-					<td><input name=val type=number min=1 max=5 size=1 value=1></td>
+					<td><? if($res['ifdomanda']!='0'){?>Sempre<input type="radio" name="risp" value="" checked><br> SI<input type="radio" name="risp" value="S"><br> NO<input type="radio" name="N" value="N" > <?}?></td>
+					<td>Min. <input name=val type=number min=1 max=5 size=1 value=1></td>
 					<td class="alc"><textarea name="descrX" cols="40" rows="3" ></textarea></td>
 					<td><button name="addS<?=$idx?>" class="w3-btn w3-white w3-border w3-border-blue w3-round " onClick="submit();">Aggiungi</button></td>
 					</form>
@@ -363,8 +421,8 @@
 ?>
 						</select>
 					</td>
-					<td>Min.</td>
-					<td><input name=val type=number min=1 max=5 size=1 value=1></td>
+					<td><? if($res['ifdomanda']!='0'){?>Sempre<input type="radio" name="risp" value="" checked><br> SI<input type="radio" name="risp" value="S"><br> NO<input type="radio" name="N" value="N" > <?}?></td>
+					<td>Min. <input name=val type=number min=1 max=5 size=1 value=1></td>
 					<td class="alc"><textarea name="descrX" cols="40" rows="3" ></textarea></td>
 					<td><button name="addD<?=$idx?>" class="w3-btn w3-white w3-border w3-border-blue w3-round " onClick="submit();">Aggiungi</button></td>
 					</form>
@@ -382,7 +440,7 @@
 ?>
 						</select>
 					</td>
-					<td>&nbsp;</td>
+					<td><? if($res['ifdomanda']!='0'){?>Sempre<input type="radio" name="risp" value="" checked><br> SI<input type="radio" name="risp" value="S"><br> NO<input type="radio" name="N" value="N" > <?}?></td>
 					<td>&nbsp;</td>
 					<td class="alc"><textarea name="descrX" cols="40" rows="3" ></textarea></td>
 					<td><button name="addP<?=$idx?>" class="w3-btn w3-white w3-border w3-border-blue w3-round " onClick="submit();">Aggiungi</button></td>
