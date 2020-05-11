@@ -56,8 +56,15 @@
 
 			$descrX=mysql_real_escape_string($_POST['descrX']);
 
+			$risp=$_POST['risp'];
 
-			$Mysql="INSERT INTO cond_oggetti ( idoggetto, tipocond, tabcond, valcond, descrX) values($idx, '$tipocond', $attributo, $val, '$descrX')";
+			if ($risp != 'X') {
+			$Mysql="INSERT INTO cond_oggetti ( idoggetto, tipocond, tabcond, valcond, descrX, risp) values($idx, '$tipocond', $attributo, $val, '$descrX' , '$risp')";
+		} else {
+			$Mysql="INSERT INTO cond_oggetti ( idoggetto, tipocond, tabcond, valcond, descrX ) values($idx, '$tipocond', $attributo, $val, '$descrX' )";
+		}
+
+
 
 
 			mysql_query($Mysql);
@@ -383,7 +390,7 @@
 						<option value="9">Prontezza</option>
 						</select>
 					</td>
-					<td><? if($res['ifdomanda']!='0'){?>Sempre<input type="radio" name="risp" value="" checked><br> SI<input type="radio" name="risp" value="S"><br> NO<input type="radio" name="N" value="N" > <?}?></td>
+					<td><? if($res['ifdomanda']!='0'){?>Sempre<input type="radio" name="risp" value="X" checked><br> SI<input type="radio" name="risp" value="S"><br> NO<input type="radio" name="risp" value="N" > <?}?></td>
 					<td>Min. <input name=val type=number min=1 max=5 size=1 value=1></td>
 					<td class="alc"><textarea name="descrX" cols="40" rows="3" ></textarea></td>
 					<td><button name="addA<?=$idx?>" class="w3-btn w3-white w3-border w3-border-blue w3-round " onClick="submit();">Aggiungi</button></td>
@@ -402,7 +409,7 @@
 ?>
 						</select>
 					</td>
-					<td><? if($res['ifdomanda']!='0'){?>Sempre<input type="radio" name="risp" value="" checked><br> SI<input type="radio" name="risp" value="S"><br> NO<input type="radio" name="N" value="N" > <?}?></td>
+					<td><? if($res['ifdomanda']!='0'){?>Sempre<input type="radio" name="risp" value="X" checked><br> SI<input type="radio" name="risp" value="S"><br> NO<input type="radio" name="risp" value="N" > <?}?></td>
 					<td>Min. <input name=val type=number min=1 max=5 size=1 value=1></td>
 					<td class="alc"><textarea name="descrX" cols="40" rows="3" ></textarea></td>
 					<td><button name="addS<?=$idx?>" class="w3-btn w3-white w3-border w3-border-blue w3-round " onClick="submit();">Aggiungi</button></td>
@@ -421,7 +428,7 @@
 ?>
 						</select>
 					</td>
-					<td><? if($res['ifdomanda']!='0'){?>Sempre<input type="radio" name="risp" value="" checked><br> SI<input type="radio" name="risp" value="S"><br> NO<input type="radio" name="N" value="N" > <?}?></td>
+					<td><? if($res['ifdomanda']!='0'){?>Sempre<input type="radio" name="risp" value="X" checked><br> SI<input type="radio" name="risp" value="S"><br> NO<input type="radio" name="risp" value="N" > <?}?></td>
 					<td>Min. <input name=val type=number min=1 max=5 size=1 value=1></td>
 					<td class="alc"><textarea name="descrX" cols="40" rows="3" ></textarea></td>
 					<td><button name="addD<?=$idx?>" class="w3-btn w3-white w3-border w3-border-blue w3-round " onClick="submit();">Aggiungi</button></td>
@@ -440,7 +447,7 @@
 ?>
 						</select>
 					</td>
-					<td><? if($res['ifdomanda']!='0'){?>Sempre<input type="radio" name="risp" value="" checked><br> SI<input type="radio" name="risp" value="S"><br> NO<input type="radio" name="N" value="N" > <?}?></td>
+					<td><? if($res['ifdomanda']!='0'){?>Sempre<input type="radio" name="risp" value="X" checked><br> SI<input type="radio" name="risp" value="S"><br> NO<input type="radio" name="risp" value="N" > <?}?></td>
 					<td>&nbsp;</td>
 					<td class="alc"><textarea name="descrX" cols="40" rows="3" ></textarea></td>
 					<td><button name="addP<?=$idx?>" class="w3-btn w3-white w3-border w3-border-blue w3-round " onClick="submit();">Aggiungi</button></td>
