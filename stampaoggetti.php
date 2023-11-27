@@ -1,16 +1,17 @@
 <?php
-	include ('session_start.inc.php');
+	// include ('session_start.inc.php');
 	include ('db_start.inc.php');
 
 
 include('phpqrcode/qrlib.php');
 
-
+/***
 	if (!isset ($_SESSION['idutente'])) {
 		//die ("Errore, nessuna sessione attiva!");
 		session_write_close();
 		header("Location: index.php", true);
 	}
+*******/
 ?>
 
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
@@ -19,7 +20,7 @@ include('phpqrcode/qrlib.php');
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title>Notturna - Cronaca di Roma</title>
 	<link href="https://fonts.googleapis.com/css?family=Libre+Baskerville" rel="stylesheet">
-	<link href="w3.css" rel="stylesheet" >
+	<!-- <link href="w3.css" rel="stylesheet" > -->
 	<style>
 		/*	table td {
 			border: 1px solid red;
@@ -135,7 +136,7 @@ include('phpqrcode/qrlib.php');
 	<div class="list-align" style="display: block;" >
 
 <?
-			$Mysql="SELECT * FROM oggetti";
+			$Mysql="SELECT * FROM oggetti order by idoggetto";
 			$Result=mysql_query($Mysql);
 			while ($res=mysql_fetch_array($Result)) {
 				if ($res['fissomobile']=="M") {
